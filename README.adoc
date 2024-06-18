@@ -1,0 +1,37 @@
+= docs-spark
+
+The all new all-singing Spark Connector docs project, extracted 
+from https://github.com/couchbase/couchbase-spark-connector
+
+== Technical notes on Extraction
+
+[source,console]
+--
+brew install git-filter-repo
+
+# download *new* copy
+gh repo clone couchbase/couchbase-spark-connector
+git clone couchbase-spark-connector docs-spark
+cd docs-spark
+
+# checkout all the different release tags in turn
+
+# remove noise from millions of tags
+git remote rm origin
+
+git branch -m master main
+
+git filter-repo --subdirectory-filter docs/ --refs main release/2.1 release/2.2 release/2.3 release/2.4 release/3.0 release/3.1 release/3.2 release/3.3
+
+# run filter-repo again with --force
+# we know this is OK this time, because this *is* a new checkout!
+
+
+# create README.adoc
+git add README.adoc
+git commit -m "AV-80236: add README"
+
+git remote add origin git@github.com:couchbase/docs-spark.git
+git push -u origin main
+# push the other branches
+--
