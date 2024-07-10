@@ -4,7 +4,8 @@
 [abstract]
 Information about the different configuration properties the Spark connector either expects or allows to set.
 
-All couchbase-specific properties start with the `spark.couchbase` prefix. They can all be configured on the `SparkSession` like the following:
+All couchbase-specific properties start with the `spark.couchbase` prefix.
+They can all be configured on the `SparkSession` like the following:
 
 [source,scala]
 ----
@@ -72,9 +73,11 @@ The implicit values are always used if no explicit `Keyspace` or option override
 
 == Dynamic Configuration Properties
 
-In addition to configuring the connector, it is also possible to configure the underlying SDK properties. Usually the SDK provides a rich builder to do so, but since spark only allows to provide string properties the approach is a bit less flexible.
+In addition to configuring the connector, it is also possible to configure the underlying SDK properties.
+Usually the SDK provides a rich builder to do so, but since spark only allows to provide string properties the approach is a bit less flexible.
 
-The strategy is similar to configuring the SDK through system properties or connection string values. Properties are taken as a string value and then decoded into the target format.
+The strategy is similar to configuring the SDK through system properties or connection string values.
+Properties are taken as a string value and then decoded into the target format.
 
 For example to configure the KeyValue timeout, the following property can be used:
 
@@ -144,7 +147,8 @@ The same connection identifier mechanism works for dynamic properties (described
 
 == TLS Connections
 
-TLS connections can be confiugred through SDK properties shown above, but there is an alternative way that aligns with configuring TLS in spark itself. The following properties are recognized and if enabled used to connect to a Couchbase cluster encrypted:
+TLS connections can be configured through SDK properties shown above, but there is an alternative way that aligns with configuring TLS in spark itself.
+The following properties are recognized and if enabled used to connect to a Couchbase cluster encrypted:
 
 .TLS Config Properties
 |===
