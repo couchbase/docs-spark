@@ -1,0 +1,86 @@
+= Couchbase Columnar Support
+:page-topic-type: concept
+
+[abstract]
+Connecting to Couchbase Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
+
+== Spark Configuration
+
+The first step as usual is to create a `SparkSession`, here connecting to your Couchbase Columnar cluster.
+This works just like connecting to a Couchbase Capella or self-managed Couchbase cluster.
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=init,indent=0]
+----
+
+The following examples will use the `travel-sample` example set of data, which can be loaded through the UI.
+
+== Reading a Dataframe
+
+Let's start by reading a Spark `Dataframe` from the `airline` collection, which is in the `inventory` scope of the `travel-sample` database:
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=reading-dataframe,indent=0]
+----
+
+This is a normal Spark `Dataframe` that we can count, iterate and so on.  So any analysis that is possible with Spark is also possible with Columnar.
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=processing-dataframe,indent=0]
+----
+
+== Reading a Dataset
+It can be preferable to read into a Spark `Dataset` rather than a `Dataframe`.
+
+To do this, we:
+
+1. Create an `Airline` case class that matches our expected results.
+2. Import the `SparkSession` implicits allowing Spark to convert directly to our `Airline` class.
+3. Do `.as[Airline]` to turn our `Dataframe` into a `Dataset`.
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=reading-dataset,indent=0]
+----
+
+== Writing
+A `Dataframe` can be written into Columnar:
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=writing-dataframe,indent=0]
+----
+
+== Spark SQL
+We can use Spark's `createOrReplaceTempView` to create a temporary view from a `Dataframe`, which we can then run Spark SQL on (which creates another `Dataframe`):
+
+[source,scala]
+----
+include::example$Columnar.scala[tag=sql,indent=0]
+----
+
+== Pyspark
+Couchbase Columnar can be accessed through Pyspark, though this is not a supported configuration at present.
+See our xref:pyspark.adoc[Pyspark documentation] for more details.
+
+[source,python]
+----
+from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName("Couchbase Spark Connector Columnar Example") \
+    .config("spark.couchbase.connectionString", "couchbases://your-columnar-endpoint.cloud.couchbase.com.com") \
+    .config("spark.couchbase.username", "username") \
+    .config("spark.couchbase.password", "password") \
+    .getOrCreate()
+
+df = (spark.read.format("couchbase.columnar")
+      .option("database", "travel-sample")
+      .option("scope", "inventory")
+      .option("collection", "airline")
+      .load())
+df.show()
+----

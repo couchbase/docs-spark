@@ -2,12 +2,14 @@
 :page-topic-type: concept
 
 [abstract]
-Spark SQL allows accessing Query and Analytics in powerful and convenient ways.
+Spark SQL allows accessing Query, Analytics and Columnar in powerful and convenient ways.
 
 All query examples presented on this page at least require a primary index on the `travel-sample` data set - or on each collection respectively.
 If you haven't done so already, you can create a primary index by executing this N1QL statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
 To use the analytics examples, corresponding datasets or collection mappings should be created.
+
+Couchbase Columnar is also supported, and is xref:columnar.adoc[documented separately].
 
 == DataFrame creation
 
