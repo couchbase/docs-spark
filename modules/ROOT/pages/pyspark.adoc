@@ -1,14 +1,18 @@
-= Using the Spark Shell
+= Pyspark
 :page-topic-type: concept
 [abstract]
 You can use the Couchbase Spark Connector together with Pyspark to quickly and easily explore your data.
 NOTE: Pyspark is not an officially supported configuration for the Couchbase Spark Connector.
 The information on this page is for experimental purposes only.
-== Using the Spark Connector with Pyspark
+
+== Using the Couchbase Spark Connector with Pyspark
 To use the Couchbase Spark Connector with Pyspark:
-. Download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
+
+Download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
 This file contains the connector.
-. Use the `spark-submit` command with your Spark Python script.
+
+Use the `spark-submit` command, which is part of the standard Apache Spark installation, with your Spark Python script.
+
 ** To automatically start a local Spark master:
 ```
 bin/spark-submit --jars spark-connector-assembly-VERSION.jar YourPythonScript.py
@@ -31,5 +35,74 @@ spark = SparkSession.builder \
 df = spark.read.format("couchbase.query").load()
 df.printSchema()
 df.show()
+spark.stop()
+```
+
+== Using the Couchbase Spark Connector with Jupyter Notebooks
+The Couchbase Spark Connector can easily be used together with a Jupyter Notebook.
+
+To get started quickly, you can run the following commands.
+
+First, download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
+This file contains the connector.
+
+Now install Jupyter and Pyspark.  Note it is a standard Python best practice to do this inside a Python virtual environment (venv, Conda, etc.), but those details are omitted here:
+```
+pip install jupyter pyspark
+```
+
+Run Jupyter:
+```
+jupyter notebook
+```
+
+And paste and run this sample script in the Jupyter UI (after loading the `travel-sample` dataset on your Couchbase cluster, and changing the constants below to point to that cluster):
+
+```
+from pyspark.sql import SparkSession
+import pyspark
+
+spark = SparkSession.builder \
+    .appName("Couchbase Spark Connector Query Jupyter Notebook Example") \
+    .config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar") \
+    .config("spark.couchbase.connectionString", "couchbases://<your Couchbase cluster hostname>") \
+    .config("spark.couchbase.username", "<your Couchbase cluster username>") \
+    .config("spark.couchbase.password", "<your Couchbase cluster password>") \
+    .getOrCreate()
+
+# This example assumes the travel-sample example dataset has been preloaded on the cluster.
+df = (spark.read.format("couchbase.query")
+      .option("bucket", "travel-sample")
+      .option("scope", "inventory")
+      .option("collection", "airline")
+      .load())
+df.printSchema()
+df.show()
+
+spark.stop()
+```
+
+=== Troubleshooting
+If problems are seen, then ensure you are using compatible Scala versions.  The latest `pyspark` package (at the time of writing) is internally running Scala 2.12, so the 2.12-compiled version of the Couchbase Spark Connector must also be used.  If you see errors mentioning `NoSuchMethodError`, this is very likely the cause.
+
+The Scala version can be checked with the following:
+
+```
+from py4j.java_gateway import java_import
+from pyspark.sql import SparkSession
+import pyspark
+
+print(f"Versions: pyspark.__version__={pyspark.__version__}")
+
+spark = SparkSession.builder ... // copy from code above
+
+# Access the Spark Context's JVM directly, to check the Scala version (which must be compatible with the Couchbase Spark Connector)
+sc = spark.sparkContext
+gw = sc._gateway
+java_import(gw.jvm, "org.apache.spark.repl.Main")
+scala_version = gw.jvm.scala.util.Properties.versionString()
+
+print(f"Versions: spark.version={spark.version} Scala version={scala_version}")
+
 spark.stop()
 ```
