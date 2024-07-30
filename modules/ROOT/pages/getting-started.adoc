@@ -13,7 +13,7 @@ Create a new sbt project and add the following content to the `build.sbt` file.
 This code includes all the Spark dependencies, as well as the Couchbase Spark connector.
 Just enough to get you started!
 
-Here is a reference to the http://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.3.4/[Scala docs^].
+Here is a reference to the http://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.3.5/api[Scala docs^].
 
 [source,scala]
 ----
@@ -23,12 +23,12 @@ organization := "my.organization"
 
 version := "1.0.0-SNAPSHOT"
 
-scalaVersion := "2.12.14"
+scalaVersion := "2.12.19"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "3.3.0",
-  "org.apache.spark" %% "spark-sql" % "3.3.0",
-  "com.couchbase.client" %% "spark-connector" % "3.3.4"
+  "org.apache.spark" %% "spark-core" % "3.3.4",
+  "org.apache.spark" %% "spark-sql" % "3.3.4",
+  "com.couchbase.client" %% "spark-connector" % "3.3.5"
 )
 ----
 
