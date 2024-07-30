@@ -92,6 +92,43 @@ airlines
 
 It is also possible to provide a custom schema as well as a predicate for maximum flexibility when describing your data layout as well as optimizing the performance when retrieving unstructured data.
 
+== DataFrame partitioning
+
+By default, one DataFrame read or write with query will result in one {sqlpp} statement being executed.
+
+With very large DataFrames this can present issues, as all rows are streamed back to one Spark worker.  In addition there is no parallelism.
+
+So in some specific situations the user may wish to provide partitioning hints so that multiple {sqlpp} statements are executed.
+
+In this example, say we are reading from an orders collection, where we know we have around 100,000 orders and want to partition into 100 {sqlpp} statements.  Here we will partition on a numerical "id" column:
+```
+spark.read
+  .format("couchbase.query")
+  .option(QueryOptions.PartitionColumn, "id")
+  .option(QueryOptions.PartitionLowerBound, "1")
+  .option(QueryOptions.PartitionUpperBound, "100000")
+  .option(QueryOptions.PartitionCount, "100")
+  .load()
+```
+
+This will result in 100 partitions with {sqlpp} statements along the lines of
+```
+SELECT [...] WHERE [...] AND id < 1000
+SELECT [...] WHERE [...] AND (id >= 1000 AND id < 2000)
+SELECT [...] WHERE [...] AND (id >= 2000 AND id < 3000)
+...
+SELECT [...] WHERE [...] AND id >= 99000
+```
+
+If any of the four partitioning options is provided, then all must be.
+
+The chosen partitionColumn must support the SQL comparison operators "<" and ">=".
+Any results where partitionColumn is null or otherwise not matched by those operators, will not be included.
+
+`PartitionLowerBound` and `PartitionUpperBound` do not bound or limit the results, they simply choose how many results are in each partition.
+Note that the first and last queries in the example above use `<` and `>=` to include all results.
+
+
 == DataFrame persistence
 
 It is also possible to persist DataFrames into Couchbase.
