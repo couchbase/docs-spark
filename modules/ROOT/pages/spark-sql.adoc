@@ -93,13 +93,14 @@ airlines
 It is also possible to provide a custom schema as well as a predicate for maximum flexibility when describing your data layout as well as optimizing the performance when retrieving unstructured data.
 
 == DataFrame partitioning
-My default, one DataFrame read or write with query will result in one SQL++ statement being executed.
+
+By default, one DataFrame read or write with query will result in one {sqlpp} statement being executed.
 
 With very large DataFrames this can present issues, as all rows are streamed back to one Spark worker.  In addition there is no parallelism.
 
-So in some specific situations the user may wish to provide partitioning hints so that multiple SQL++ statements are executed.
+So in some specific situations the user may wish to provide partitioning hints so that multiple {sqlpp} statements are executed.
 
-In this example, say we are reading from an orders collection, where we know we have around 100,000 orders and want to partition into 100 SQL++ statements.  Here we will partition on a numerical "id" column:
+In this example, say we are reading from an orders collection, where we know we have around 100,000 orders and want to partition into 100 {sqlpp} statements.  Here we will partition on a numerical "id" column:
 ```
 spark.read
   .format("couchbase.query")
@@ -110,7 +111,7 @@ spark.read
   .load()
 ```
 
-This will result in 100 partitions with SQL++ statements along the lines of
+This will result in 100 partitions with {sqlpp} statements along the lines of
 ```
 SELECT [...] WHERE [...] AND id < 1000
 SELECT [...] WHERE [...] AND (id >= 1000 AND id < 2000)
