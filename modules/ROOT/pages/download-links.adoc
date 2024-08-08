@@ -10,13 +10,13 @@ Prerelease versions are available through our Couchbase Maven repository for eas
 From its 3.5.0 release, the connector supports both Scala 2.12 and Scala 2.13.
 The coordinates for the artifacts are:
 
-Scala 2.12:
+.Scala 2.12:
 
 * *GroupId:* com.couchbase.client
 * *ArtifactId:* spark-connector_2.12
 * *Version:* 3.5.0
 
-Scala 2.13:
+.Scala 2.13:
 
 * *GroupId:* com.couchbase.client
 * *ArtifactId:* spark-connector_2.13
