@@ -5,7 +5,7 @@ object Columnar {
   val spark = SparkSession
     .builder()
     .appName("CouchbaseColumnarSample") // your app name
-    .master("local[*]") // your local or remote master node
+    .master("local[*]") // your local or remote Spark master node
     .config("spark.couchbase.connectionString", "couchbases://your-columnar-endpoint.cloud.couchbase.com")
     .config("spark.couchbase.username", "username")
     .config("spark.couchbase.password", "password")

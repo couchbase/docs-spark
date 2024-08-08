@@ -2,8 +2,8 @@
 :page-topic-type: concept
 [abstract]
 You can use the Couchbase Spark Connector together with Pyspark to quickly and easily explore your data.
-NOTE: Pyspark is not an officially supported configuration for the Couchbase Spark Connector.
-The information on this page is for experimental purposes only.
+NOTE: Pyspark support is currently at an Uncommitted level in the Couchbase Spark Connector.
+We encourage users to try it out and provide feedback, but there is a small chance that changes to the API may be required.
 
 == Using the Couchbase Spark Connector with Pyspark
 To use the Couchbase Spark Connector with Pyspark:
@@ -11,9 +11,25 @@ To use the Couchbase Spark Connector with Pyspark:
 Download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
 This file contains the connector.
 
-Use the `spark-submit` command, which is part of the standard Apache Spark installation, with your Spark Python script.
+There are many ways to run Pyspark, and this documention will cover the most common three:
 
-** To automatically start a local Spark master:
+1. Creating a Python script and submitting it to a Spark cluster using `spark-submit`.
+2. Creating a Python script and running it locally.
+3. Creating a Jupyter Notebook.
+
+In addition the Couchbase Spark Connector can be used with Scala or Pyspark in environments such as Databricks - see our xref:databricks.adoc[Databricks documentation].
+
+Note the following examples assume you already have a Couchbase cluster running, with the `travel-sample` sample data loaded.
+
+=== Using `spark-submit`
+Use the `spark-submit` command, which is part of the standard Apache Spark installation, with your Spark Python script to submit it to a local or remote Spark cluster.
+
+The important points are:
+
+* The `spark-submit` `--jars` argument is provided, pointing at the downloaded Couchbase Spark Connector assembly jar.
+* The `SparkSession` config `.master()` is not provided, as deciding the Spark master is handled by the arguments provided to `spark-submit`.
+
+** To use a local Spark master (it will automatically start it if required):
 ```
 bin/spark-submit --jars spark-connector-assembly-VERSION.jar YourPythonScript.py
 ```
@@ -21,8 +37,8 @@ bin/spark-submit --jars spark-connector-assembly-VERSION.jar YourPythonScript.py
 ```
 bin/spark-submit --master spark://your-spark-host:7077 --jars spark-connector-assembly-VERSION.jar YourPythonScript.py
 ```
-== Example
-The following example shows a Python/Pyspark script that uses the Couchbase Spark Connector.
+==== Example
+A sample Python/Pyspark script that uses the Couchbase Spark Connector and can be used with `spark-submit` is:
 ```
 from pyspark.sql import SparkSession
 spark = SparkSession.builder \
@@ -30,12 +46,49 @@ spark = SparkSession.builder \
     .config("spark.couchbase.connectionString", "couchbases://YourCouchbaseClusterHostname") \
     .config("spark.couchbase.username", "test") \
     .config("spark.couchbase.password", "Password!1") \
-    .config("spark.couchbase.implicitBucket", "travel-sample") \
     .getOrCreate()
-df = spark.read.format("couchbase.query").load()
+df = spark.read.format("couchbase.query") \
+    .option("bucket", "travel-sample") \
+    .option("scope", "inventory") \
+    .option("collection", "airline") \
+    .load()
 df.printSchema()
 df.show()
 spark.stop()
+```
+
+=== Using the Couchbase Spark Connector with a local Spark test cluster
+For testing purposes, the `.master("local[*]")` Spark option can be used, which automatically starts a local Spark cluster.
+
+The important points are:
+
+* The location of the Couchbase Spark Connector assembly jar must be provided with `.config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar")`.
+* `.master("local[*]")` is used (though this is the default and so can be omitted).
+
+A sample Python/Pyspark script that uses the Couchbase Spark Connector and this mode is:
+```
+from pyspark.sql import SparkSession
+spark = SparkSession.builder \
+    .appName("Couchbase Spark Connector Example") \
+    .master("local[*]") \
+    .config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar")
+    .config("spark.couchbase.connectionString", "couchbases://YourCouchbaseClusterHostname") \
+    .config("spark.couchbase.username", "test") \
+    .config("spark.couchbase.password", "Password!1") \
+    .getOrCreate()
+df = spark.read.format("couchbase.query") \
+    .option("bucket", "travel-sample") \
+    .option("scope", "inventory") \
+    .option("collection", "airline") \
+    .load()
+df.printSchema()
+df.show()
+spark.stop()
+```
+
+You can run this script normally e.g. `python YourPythonScript.py`.  There is no need to install Spark first, but do install the dependencies:
+```
+pip install pyspark
 ```
 
 == Using the Couchbase Spark Connector with Jupyter Notebooks
@@ -56,36 +109,50 @@ Run Jupyter:
 jupyter notebook
 ```
 
-And paste and run this sample script in the Jupyter UI (after loading the `travel-sample` dataset on your Couchbase cluster, and changing the constants below to point to that cluster):
+And now the same example from the section above can be copy and pasted into the Jupyter UI, and run.
 
-```
-from pyspark.sql import SparkSession
-import pyspark
+== Supported Operations
 
-spark = SparkSession.builder \
-    .appName("Couchbase Spark Connector Query Jupyter Notebook Example") \
-    .config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar") \
-    .config("spark.couchbase.connectionString", "couchbases://<your Couchbase cluster hostname>") \
-    .config("spark.couchbase.username", "<your Couchbase cluster username>") \
-    .config("spark.couchbase.password", "<your Couchbase cluster password>") \
-    .getOrCreate()
+The Couchbase Spark Connector supports all Spark DataFrame operations that the Couchbase Spark Connector supports with Scala.
 
-# This example assumes the travel-sample example dataset has been preloaded on the cluster.
-df = (spark.read.format("couchbase.query")
-      .option("bucket", "travel-sample")
-      .option("scope", "inventory")
-      .option("collection", "airline")
-      .load())
-df.printSchema()
-df.show()
+The Scala DataFrame examples in this documentation can be easily adapted into Python/Pyspark code.  For instance:
 
-spark.stop()
-```
+[{tabs}]
+====
+Scala::
++
+[source,scala]
+--
+val airlines = spark.read.format("couchbase.columnar")
+    .option(ColumnarOptions.Database, "travel-sample")
+    .option(ColumnarOptions.Scope, "inventory")
+    .option(ColumnarOptions.Collection, "airline")
+    .load()
+--
 
-=== Troubleshooting
+Python::
++
+--
+[source,python]
+----
+airlines = (spark.read.format("couchbase.columnar")
+    .option("database", "travel-sample")
+    .option("scope", "inventory")
+    .option("collection", "airline")
+    .load())
+----
+--
+====
+
+Generally all that is needed is to look up the string fields for options.
+
+RDD operations are not supported, as these require Scala specifics that are not supportable through the Pyspark interface.
+This includes reading from KV and executing arbitrary SQL++, both of which use RDDs.
+
+== Troubleshooting Pyspark
 If problems are seen, then ensure you are using compatible Scala versions.  The latest `pyspark` package (at the time of writing) is internally running Scala 2.12, so the 2.12-compiled version of the Couchbase Spark Connector must also be used.  If you see errors mentioning `NoSuchMethodError`, this is very likely the cause.
 
-The Scala version can be checked with the following:
+The versions can be checked with the following:
 
 ```
 from py4j.java_gateway import java_import

@@ -1,13 +1,16 @@
-= Couchbase Columnar Support
+= Capella Columnar Support
 :page-topic-type: concept
 
 [abstract]
-Connecting to Couchbase Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
+Connecting to Capella columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
+
+NOTE: Capella columnar support is currently at an Uncommitted level in the Couchbase Spark Connector.
+We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
 
 == Spark Configuration
 
-The first step as usual is to create a `SparkSession`, here connecting to your Couchbase Columnar cluster.
-This works just like connecting to a Couchbase Capella or self-managed Couchbase cluster.
+The first step as usual is to create a `SparkSession`, here connecting to your Capella columnar cluster.
+This works just like connecting to any other type of Couchbase cluster.
 
 [source,scala]
 ----
@@ -18,14 +21,14 @@ The following examples will use the `travel-sample` example set of data, which c
 
 == Reading a Dataframe
 
-Let's start by reading a Spark `Dataframe` from the `airline` collection, which is in the `inventory` scope of the `travel-sample` database:
+Let's start by reading a Spark DataFrame from the `airline` collection, which is in the `inventory` scope of the `travel-sample` database:
 
 [source,scala]
 ----
 include::example$Columnar.scala[tag=reading-dataframe,indent=0]
 ----
 
-This is a normal Spark `Dataframe` that we can count, iterate and so on.  So any analysis that is possible with Spark is also possible with Columnar.
+This is a normal Spark DataFrame that we can count, iterate and so on.
 
 [source,scala]
 ----
@@ -33,37 +36,31 @@ include::example$Columnar.scala[tag=processing-dataframe,indent=0]
 ----
 
 == Reading a Dataset
-It can be preferable to read into a Spark `Dataset` rather than a `Dataframe`.
+It can be preferable to read into a Spark `Dataset` rather than a DataFrame, as this lets us use Scala case classes directly.
 
 To do this, we:
 
 1. Create an `Airline` case class that matches our expected results.
 2. Import the `SparkSession` implicits allowing Spark to convert directly to our `Airline` class.
-3. Do `.as[Airline]` to turn our `Dataframe` into a `Dataset`.
+3. Do `.as[Airline]` to turn our DataFrame into a `Dataset`.
 
 [source,scala]
 ----
 include::example$Columnar.scala[tag=reading-dataset,indent=0]
 ----
 
-== Writing
-A `Dataframe` can be written into Columnar:
-
-[source,scala]
-----
-include::example$Columnar.scala[tag=writing-dataframe,indent=0]
-----
-
 == Spark SQL
-We can use Spark's `createOrReplaceTempView` to create a temporary view from a `Dataframe`, which we can then run Spark SQL on (which creates another `Dataframe`):
+We can use Spark's `createOrReplaceTempView` to create a temporary view from a DataFrame, which we can then run Spark SQL on (which creates another DataFrame):
 
 [source,scala]
 ----
 include::example$Columnar.scala[tag=sql,indent=0]
 ----
 
+Note this SQL is executed purely within Spark, and is not sent to the Capella columnar cluster.
+
 == Pyspark
-Couchbase Columnar can be accessed through Pyspark, though this is not a supported configuration at present.
+Capella columnar can be accessed through Pyspark.
 See our xref:pyspark.adoc[Pyspark documentation] for more details.
 
 [source,python]
