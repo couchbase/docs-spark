@@ -13,7 +13,7 @@ Create a new sbt project and add the following content to the `build.sbt` file.
 This code includes all the Spark dependencies, as well as the Couchbase Spark connector.
 Just enough to get you started!
 
-Here is a reference to the http://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.3.3/[Scala docs^].
+Here is a reference to the http://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.5.0/[Scala docs^].
 
 [source,scala]
 ----
@@ -23,12 +23,12 @@ organization := "my.organization"
 
 version := "1.0.0-SNAPSHOT"
 
-scalaVersion := "2.12.14"
+scalaVersion := "2.13.14"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "3.3.0",
-  "org.apache.spark" %% "spark-sql" % "3.3.0",
-  "com.couchbase.client" %% "spark-connector" % "3.3.3"
+  "org.apache.spark" %% "spark-core" % "3.5.1",
+  "org.apache.spark" %% "spark-sql" % "3.5.1",
+  "com.couchbase.client" %% "spark-connector" % "3.5.0"
 )
 ----
 
@@ -57,15 +57,13 @@ val spark = SparkSession
   .builder()
   .appName("Couchbase Quickstart")
   .master("local") // use the JVM as the master, great for testing
-  .config("spark.couchbase.connectionString", "127.0.0.1")
+  .config("spark.couchbase.connectionString", "couchbases://cb.your-capella-hostname.couchbase.com")
   .config("spark.couchbase.username", "username")
   .config("spark.couchbase.password", "password")
   .getOrCreate()
 ----
 
-In this configuration, we are using the JVM-local spark master to run our jobs. The Couchbase cluster is located on our local machine (`127.0.0.1`) and we use the user `username` with a password of `password`.
-
-NOTE: to showcase different APIs, the following examples us the `Keyspace` explicitly. It is also possible to configure an implicit bucket, scope etc. through the configuration properties. See the configuration documentation for more information.
+In this configuration, we are using the JVM-local spark master to run our jobs. We're using a Couchbase Capella cluster (the Couchbase Spark Connector works against all varieties of Couchbase cluster), and we use the user `username` with a password of `password`.
 
 == Creating and saving RDDs
 

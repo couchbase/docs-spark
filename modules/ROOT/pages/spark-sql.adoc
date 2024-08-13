@@ -2,14 +2,16 @@
 :page-topic-type: concept
 
 [abstract]
-Spark SQL allows accessing Query and Analytics in powerful and convenient ways.
+Spark SQL allows accessing query, analytics and columnar in powerful and convenient ways.
 
 All query examples presented on this page at least require a primary index on the `travel-sample` data set - or on each collection respectively.
-If you haven't done so already, you can create a primary index by executing this N1QL statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
+If you haven't done so already, you can create a primary index by executing this SQL++ statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
 To use the analytics examples, corresponding datasets or collection mappings should be created.
 
-== DataFrame creation
+Capella columnar is also supported, and is xref:columnar.adoc[documented separately].
+
+== DataFrames
 
 Before you can create a DataFrame with Couchbase, you need to create a `SparkSession`.
 
@@ -18,28 +20,58 @@ Before you can create a DataFrame with Couchbase, you need to create a `SparkSes
 include::example$SparkSQL.scala[tag=context,indent=0]
 ----
 
-A `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use. Both `couchbase.query` and `couchbase.analytics` are available.
+A `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use. For `spark.read`, `couchbase.query`, `couchbase.analytics` and `couchbase.columnar` are available.
 
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=simpledf,indent=0]
 ----
 
-While this is the easiest, it has an important property to keep in mind:
+=== Collections
+You'll often want the DataFrame to work with a specific Couchbase collection, which can be done with the following:
+[{tabs}]
+====
+Query::
++
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=query-collection,indent=0]
+----
+If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
 
-It will try to perform automatic schema inference based on the full data set, which is very likely to not hit the right schema (especially if you have a large or diverse data set) - unless you are using a specific collection for each document type.
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=context-with-all-implicit-options,indent=0]
+----
 
-There are two options to change this: you can either provide a manual schema or narrow down the automatic schema inference by providing explicit predicates.
-The benefit of the latter approach is also that the predicate provided will be used on every query to optimize performance.
 
-If you want to get automatic schema inference on all airlines, you can specify it like this:
+Columnar::
++
+--
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=columnar-collection,indent=0]
+----
+--
+====
+
+=== Schemas
+Spark requires a schema for all DataFrame and Dataset operations.
+
+The Couchbase Spark Connector will perform automatic schema inference based on all documents in the chosen collection - or bucket if no collection was chosen.
+This automatic inference can work well in cases where the data are very similar.
+
+If the data are not similar, there are two options: you can either provide a manual schema, or narrow down what documents the automatic schema inference acts on by providing explicit predicates.
+
+For example, say the schema of the `airlines` collection evolves and we add a `"version": 2` field to identify documents that have the new schema.
+We can limit both the inference and the SQL++ executed from the DataFrame to only those documents, by providing a filter:
 
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=queryfilter,indent=0]
 ----
 
-If you call `airlines.printSchema()`, it will print:
+You can call `airlines.printSchema()` to view the schema (either inferred or provided manually):
 
 ----
 root
@@ -62,6 +94,7 @@ A manual schema can also be provided if the automatic inference does not work pr
 include::example$SparkSQL.scala[tag=manualschema,indent=0]
 ----
 
+=== DataFrame Operations
 Now that you have a DataFrame, you can apply all the operations that Spark SQL provides.
 A simple example would be to load specific fields from the DataFrame and print some of those records:
 
@@ -90,9 +123,17 @@ airlines
 +-------+--------------------+
 ----
 
-It is also possible to provide a custom schema as well as a predicate for maximum flexibility when describing your data layout as well as optimizing the performance when retrieving unstructured data.
+=== Spark SQL
+We can use Spark's `createOrReplaceTempView` to create a temporary view from a DataFrame, which we can then run Spark SQL on (which creates another DataFrame):
 
-== DataFrame persistence
+[source,scala]
+----
+include::example$Columnar.scala[tag=sql,indent=0]
+----
+
+Note this SQL is executed purely within Spark, and is not sent to the Couchbase cluster.
+
+=== DataFrame persistence
 
 It is also possible to persist DataFrames into Couchbase.
 The important part is that a `META_ID` (or different if configured) field exists which can be mapped to the unique Document ID.
@@ -100,7 +141,7 @@ All the other fields in the DataFrame will be converted into JSON and stored as 
 
 You can store `DataFrames` using both `couchbase.query` and `couchbase.kv`. We recommend using the KeyValue data source since it provides better performance out of the box if the usage pattern allows for it.
 
-The following example reads data from a bucket and writes the first 5 results into a different bucket. Also, to showcase properties, they are used on both the read and the write side:
+The following example reads data from a collection and writes the first 5 results into a different collection. Also, to showcase properties, they are used on both the read and the write side:
 
 [source,scala]
 ----
@@ -134,7 +175,7 @@ Note that `SaveMode.Append` is not supported, since the operations are always wr
 
 .couchbase.query mappings
 |===
-| SparkSQL | Couchbase N1QL
+| SparkSQL | Couchbase SQL++
 
 | SaveMode.Overwrite
 | UPSERT INTO
@@ -182,13 +223,11 @@ include::example$SparkSQL.scala[tag=dsfetch,indent=0]
 
 ----
 
-Fore more information on Datasets, please refer to the http://spark.apache.org/docs/latest/sql-programming-guide.html#datasets[Spark Dataset Docs^].
+For more information on Datasets, please refer to the http://spark.apache.org/docs/latest/sql-programming-guide.html#datasets[Spark Dataset Docs^].
 
-== Aggregate Push Down (Spark 3.2.0+)
+== Aggregate Push Down
 
-Apache Spark SQL 3.2.0 added support for https://issues.apache.org/jira/browse/SPARK-34952[aggregate push downs^], and since the Connector version 3.2.0 this feature is supported as well.
-
-The following predicates are pushed down to both the query and analytics engines if possible:
+The following predicates are pushed down to both the query, analytics and columnar engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`
@@ -198,4 +237,4 @@ The following predicates are pushed down to both the query and analytics engines
 
 They are supported both with and without grouping (`GROUP BY`).
 
-For performance reasons, this feature is enabled by default. If for some reason it should be disabled, the `PushDownAggregate` option can be used. Note that your queries will still work fine (although likely slower) since Spark will handle the aggregations in this case.
+For performance reasons, this feature is enabled by default. If for some reason it should be disabled, the `PushDownAggregate` option can be used in which case Spark will handle the aggregations after receiving the results.

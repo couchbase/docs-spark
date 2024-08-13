@@ -12,7 +12,7 @@ The connector supports Spark Structured Streaming (as opposed to the older strea
 
 NOTE: The basic concepts of how structured streaming works are not discussed in this document - please refer to the https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html#basic-concepts[official Spark documentation] for further information.
 
-Two modes of operation are available, both with different fault-tolerance guarantees that mach the Spark semantics:
+Two modes of operation are available, both with different fault-tolerance guarantees that match the Spark semantics:
 
  - **Continuous**: At-Least-Once
  - **MicroBatch** (Intervals and Once): Exactly-Once

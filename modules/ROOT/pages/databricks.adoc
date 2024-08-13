@@ -5,7 +5,7 @@
 This section describes how to use the Couchbase Spark Connector in the Databricks environment.
 
 IMPORTANT: To avoid classpath issues in the Databricks environment, the assembly jar needs to be used as a dependency. See
-the next section on how to load it properly. Only Spark Connector 3.2.2 or later is supported in the Databricks environment.
+the next section on how to load it properly.
 
 == Compute Cluster Configuration
 Most of the work required to connect to Couchbase from Databricks is done during cluster configuration and setup.

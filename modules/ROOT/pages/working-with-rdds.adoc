@@ -37,7 +37,7 @@ The following read operations are available:
 | Fetches parts of documents ("subdocument API").
 
 |`couchbaseQuery`
-| Performs a N1QL query.
+| Performs a {sqlpp} query.
 
 |`couchbaseAnalyticsQuery`
 | Performs an analytics query.
@@ -68,7 +68,7 @@ Writing APIs are also available on the context:
 | Mutates parts of documents ("subdocument" API)
 
 |`couchbaseQuery`
-| Performs a N1QL query.
+| Performs a {sqlpp} query.
 
 |===
 
@@ -92,7 +92,7 @@ case class Replace[T](id: String, content: T, cas: Long = 0)
 
 So for each entry in the `Seq`, not only you can specify the id and content of the document, but also (optionally) the CAS value to perform an optimistic locking operation.
 
-A N1QL query can be performed like this:
+A {sqlpp} query can be performed like this:
 
 [source,scala]
 ----
