@@ -10,7 +10,7 @@ Release notes for the Spark Connector.
 Version 3.5.0 is built and tested against Spark 3.5.1, and supports Scala 2.12 and 2.13.
 
 This is the first version of the connector to support Spark 3.5 and Scala 2.13.
-It also adds support for xref:pyspark.adoc[PySpark] at `Stability.Volatile` level, and xref:columnar.adoc[Capella columnar] at `Stability.Uncommitted` level.
+It also adds support for xref:pyspark.adoc[PySpark] at `Stability.Volatile` level, and xref:columnar.adoc[Capella Columnar] at `Stability.Uncommitted` level.
 
 === Improvements
 
@@ -19,7 +19,7 @@ Support Spark 3.5.
 * https://issues.couchbase.com/browse/SPARKC-185[SPARKC-185]:
 Support Scala 2.13.
 * https://issues.couchbase.com/browse/SPARKC-203[SPARKC-203]:
-Support Capella columnar.
+Support Capella Columnar.
 
 
 == Couchbase Spark Connector 3.3.5 GA (30 July 2024)

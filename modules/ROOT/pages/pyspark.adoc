@@ -1,32 +1,33 @@
-= Pyspark
+= PySpark
 :page-topic-type: concept
-:description: You can use the Couchbase Spark Connector together with Pyspark to quickly and easily explore your data.
+:description: You can use the Couchbase Spark Connector together with PySpark to quickly and easily explore your data.
 
 [abstract]
 {description}
 
 
-NOTE: Pyspark support is currently at an Uncommitted level in the Couchbase Spark Connector.
+NOTE: PySpark support is currently at an Uncommitted level in the Couchbase Spark Connector.
 We encourage users to try it out and provide feedback, but there is a small chance that changes to the API may be required.
 
 
-== Using the Couchbase Spark Connector with Pyspark
+== Using the Couchbase Spark Connector with PySpark
 
-To use the Couchbase Spark Connector with Pyspark:
+To use the Couchbase Spark Connector with PySpark:
 
 Download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
 This file contains the connector.
 
-There are many ways to run Pyspark, and this documention will cover the most common three:
+There are many ways to run PySpark, and this documention will cover the most common three:
 
 . Creating a Python script and submitting it to a Spark cluster using `spark-submit`.
 . Creating a Python script and running it locally.
 . Creating a Jupyter Notebook.
 
-In addition the Couchbase Spark Connector can be used with Scala or Pyspark in environments such as Databricks -- see our xref:databricks.adoc[Databricks documentation].
+In addition the Couchbase Spark Connector can be used with Scala or PySpark in environments such as Databricks - see our xref:databricks.adoc[Databricks documentation].
 
 Note the following examples assume you already have a Couchbase cluster running, with the `travel-sample` sample data loaded.
 
+Also see the examples under xref:https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
 
 === Using `spark-submit`
 
@@ -52,7 +53,7 @@ bin/spark-submit --master spark://your-spark-host:7077 --jars spark-connector-as
 
 ==== Example
 
-A sample Python/Pyspark script that uses the Couchbase Spark Connector and can be used with `spark-submit` is:
+A sample Python/PySpark script that uses the Couchbase Spark Connector and can be used with `spark-submit` is:
 
 [source,sh]
 ----
@@ -83,7 +84,7 @@ The important points are:
 * The location of the Couchbase Spark Connector assembly jar must be provided with `.config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar")`.
 * `.master("local[*]")` is used (though this is the default and so can be omitted).
 
-A sample Python/Pyspark script that uses the Couchbase Spark Connector and this mode is:
+A sample Python/PySpark script that uses the Couchbase Spark Connector and this mode is:
 
 [source,sh]
 ----
@@ -107,7 +108,7 @@ spark.stop()
 ----
 
 You can run this script normally, e.g. `python YourPythonScript.py`.
-There is no need to install Spark first, but do install the dependencies:
+There is no need to install Apache Spark first, but do install the dependencies:
 
 [source,console]
 ----
@@ -124,7 +125,7 @@ To get started quickly, you can run the following commands.
 First, download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
 This file contains the connector.
 
-Now install Jupyter and Pyspark.
+Now install Jupyter and PySpark.
 Note it is a standard Python best practice to do this inside a Python virtual environment (venv, Conda, etc.), but those details are omitted here:
 
 [source,console]
@@ -140,14 +141,15 @@ jupyter notebook
 ----
 
 And now the same example from the section above can be copy and pasted into the Jupyter UI, and run.
+There is no need to install Apache Spark first.
 
+Also see the notebook examples under xref:https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
 
 == Supported Operations
 
 The Couchbase Spark Connector supports all Spark DataFrame operations that the Couchbase Spark Connector supports with Scala.
 
-The Scala DataFrame examples in this documentation can be easily adapted into Python/Pyspark code.
-For instance:
+The Scala DataFrame examples in this documentation can be easily adapted into Python/PySpark code.  For instance:
 
 [{tabs}]
 ====
@@ -180,11 +182,11 @@ airlines = (spark.read.format("couchbase.columnar")
 
 Generally all that is needed is to look up the string fields for options.
 
-RDD operations are not supported, as these require Scala specifics that are not supportable through the Pyspark interface.
+RDD operations are not supported, as these require Scala specifics that are not supportable through the PySpark interface.
 This includes reading from KV and executing arbitrary SQL++, both of which use RDDs.
 
 
-== Troubleshooting Pyspark
+== Troubleshooting PySpark
 
 If problems are seen, then ensure you are using compatible Scala versions.
 The latest `pyspark` package (at the time of writing) is internally running Scala 2.12, so the 2.12-compiled version of the Couchbase Spark Connector must also be used.

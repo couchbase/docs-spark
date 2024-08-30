@@ -2,14 +2,14 @@
 :page-topic-type: concept
 
 [abstract]
-Spark SQL allows accessing query, analytics and columnar in powerful and convenient ways.
+Spark SQL allows accessing query, analytics and Capella Columnar in powerful and convenient ways.
 
 All query examples presented on this page at least require a primary index on the `travel-sample` data set - or on each collection respectively.
 If you haven't done so already, you can create a primary index by executing this SQL++ statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
 To use the analytics examples, corresponding datasets or collection mappings should be created.
 
-Capella columnar is also supported, and is xref:columnar.adoc[documented separately].
+Capella Columnar is also supported, and is xref:columnar.adoc[documented separately].
 
 == DataFrames
 
@@ -227,7 +227,7 @@ For more information on Datasets, please refer to the http://spark.apache.org/do
 
 == Aggregate Push Down
 
-The following predicates are pushed down to both the query, analytics and columnar engines if possible:
+The following predicates are pushed down to both the query, analytics and Capella Columnar engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`

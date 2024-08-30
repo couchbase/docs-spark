@@ -2,15 +2,15 @@
 :page-topic-type: concept
 
 [abstract]
-Connecting to Capella columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
+Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
 
-NOTE: Capella columnar support is currently at an Uncommitted level in the Couchbase Spark Connector.
+NOTE: Capella Columnar support is currently at an Uncommitted level in the Couchbase Spark Connector.
 We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
 
 
 == Spark Configuration
 
-The first step as usual is to create a `SparkSession`, here connecting to your Capella columnar cluster.
+The first step as usual is to create a `SparkSession`, here connecting to your Capella Columnar cluster.
 This works just like connecting to any other type of Couchbase cluster.
 
 [source,scala]
@@ -63,13 +63,13 @@ We can use Spark's `createOrReplaceTempView` to create a temporary view from a D
 include::example$Columnar.scala[tag=sql,indent=0]
 ----
 
-Note this SQL is executed purely within Spark, and is not sent to the Capella columnar cluster.
+Note this SQL is executed purely within Spark, and is not sent to the Capella Columnar cluster.
 
 
-== Pyspark
+== PySpark
 
-Capella columnar can be accessed through Pyspark.
-See our xref:pyspark.adoc[Pyspark documentation] for more details.
+Capella Columnar can be accessed through PySpark.
+See our xref:pyspark.adoc[PySpark documentation] for more details.
 
 [source,python]
 ----
