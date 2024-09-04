@@ -144,7 +144,7 @@ The same connection identifier mechanism works for dynamic properties (described
 
 == TLS Connections
 
-TLS connections can be confiugred through SDK properties shown above, but there is an alternative way that aligns with configuring TLS in spark itself. The following properties are recognized and if enabled used to connect to a Couchbase cluster encrypted:
+TLS connections can be configured through SDK properties shown above, but there is an alternative way that aligns with configuring TLS in spark itself. The following properties are recognized and if enabled used to connect to a Couchbase cluster encrypted:
 
 .TLS Config Properties
 |===
@@ -165,3 +165,20 @@ TLS connections can be confiugred through SDK properties shown above, but there 
 |===
 
 Note that the prefix for these properties is not `spark.couchbase` but `spark.ssl`, since they are spark-generic properties.
+
+== Client Certificates
+Authentication can also be done with client certificates rather than username and password.
+This needs to be configured on the cluster first, following xref:https://docs.couchbase.com/server/current/learn/security/certificates.html#client-certificates[these instructions].
+
+Then it can be configured in the connector like this (assuming the certificates have been written into a Keystore named `keystore` with password `storepass`):
+
+[source,scala]
+----
+SparkSession
+    .config("spark.couchbase.connectionString", connectionString)
+    .config("spark.couchbase.keyStorePath", "keystore")
+    .config("spark.couchbase.keyStorePassword", "storepass")
+    .config("spark.couchbase.keyStoreType", "jks")
+    .config("spark.couchbase.security.trustCertificate", "ca.pem")
+    .config("spark.couchbase.security.enableTls", "true")
+----
