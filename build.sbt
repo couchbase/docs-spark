@@ -10,7 +10,7 @@ Compile / javaSource := baseDirectory.value / "modules" / "ROOT" / "examples"
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "3.5.1",
   "org.apache.spark" %% "spark-sql" % "3.5.1",
-  "com.couchbase.client" %% "spark-connector" % "3.5.0-SNAPSHOT"
+  "com.couchbase.client" %% "spark-connector" % "3.5.1"
 )
 
 resolvers += Resolver.mavenLocal
