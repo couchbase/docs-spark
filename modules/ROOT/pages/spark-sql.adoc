@@ -1,15 +1,18 @@
 = Spark SQL Integration
 :page-topic-type: concept
+:description: Spark SQL allows accessing query, analytics, and Capella Columnar in powerful and convenient ways.
+
 
 [abstract]
-Spark SQL allows accessing query, analytics and Capella Columnar in powerful and convenient ways.
+{description}
 
-All query examples presented on this page at least require a primary index on the `travel-sample` data set - or on each collection respectively.
-If you haven't done so already, you can create a primary index by executing this SQL++ statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
+All query examples presented on this page at least require a primary index on the `travel-sample` data set -- or on each collection respectively.
+If you haven't done so already, you can create a primary index by executing this {sqlpp} statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
 To use the analytics examples, corresponding datasets or collection mappings should be created.
 
 Capella Columnar is also supported, and is xref:columnar.adoc[documented separately].
+
 
 == DataFrames
 
@@ -20,7 +23,8 @@ Before you can create a DataFrame with Couchbase, you need to create a `SparkSes
 include::example$SparkSQL.scala[tag=context,indent=0]
 ----
 
-A `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use. For `spark.read`, `couchbase.query`, `couchbase.analytics` and `couchbase.columnar` are available.
+A `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use.
+For `spark.read`, `couchbase.query`, `couchbase.analytics`, and `couchbase.columnar` are available.
 
 [source,scala]
 ----
@@ -28,6 +32,7 @@ include::example$SparkSQL.scala[tag=simpledf,indent=0]
 ----
 
 === Collections
+
 You'll often want the DataFrame to work with a specific Couchbase collection, which can be done with the following:
 [{tabs}]
 ====
@@ -56,15 +61,16 @@ include::example$SparkSQL.scala[tag=columnar-collection,indent=0]
 ====
 
 === Schemas
+
 Spark requires a schema for all DataFrame and Dataset operations.
 
-The Couchbase Spark Connector will perform automatic schema inference based on all documents in the chosen collection - or bucket if no collection was chosen.
+The Couchbase Spark Connector will perform automatic schema inference based on all documents in the chosen collection -- or bucket if no collection was chosen.
 This automatic inference can work well in cases where the data are very similar.
 
 If the data are not similar, there are two options: you can either provide a manual schema, or narrow down what documents the automatic schema inference acts on by providing explicit predicates.
 
 For example, say the schema of the `airlines` collection evolves and we add a `"version": 2` field to identify documents that have the new schema.
-We can limit both the inference and the SQL++ executed from the DataFrame to only those documents, by providing a filter:
+We can limit both the inference and the {sqlpp} executed from the DataFrame to only those documents, by providing a filter:
 
 [source,scala]
 ----
@@ -95,6 +101,7 @@ include::example$SparkSQL.scala[tag=manualschema,indent=0]
 ----
 
 === DataFrame Operations
+
 Now that you have a DataFrame, you can apply all the operations that Spark SQL provides.
 A simple example would be to load specific fields from the DataFrame and print some of those records:
 
@@ -124,6 +131,7 @@ airlines
 ----
 
 === Spark SQL
+
 We can use Spark's `createOrReplaceTempView` to create a temporary view from a DataFrame, which we can then run Spark SQL on (which creates another DataFrame):
 
 [source,scala]
@@ -133,15 +141,56 @@ include::example$Columnar.scala[tag=sql,indent=0]
 
 Note this SQL is executed purely within Spark, and is not sent to the Couchbase cluster.
 
+== DataFrame partitioning
+
+By default, one DataFrame read or write with query will result in one {sqlpp} statement being executed.
+
+With very large DataFrames this can present issues, as all rows are streamed back to one Spark worker.
+In addition there is no parallelism.
+
+So in some specific situations the user may wish to provide partitioning hints so that multiple {sqlpp} statements are executed.
+
+In this example, say we are reading from an orders collection, where we know we have around 100,000 orders and want to partition into 100 {sqlpp} statements.
+Here we will partition on a numerical "id" column:
+```
+spark.read
+  .format("couchbase.query")
+  .option(QueryOptions.PartitionColumn, "id")
+  .option(QueryOptions.PartitionLowerBound, "1")
+  .option(QueryOptions.PartitionUpperBound, "100000")
+  .option(QueryOptions.PartitionCount, "100")
+  .load()
+```
+
+This will result in 100 partitions with {sqlpp} statements along the lines of
+```
+SELECT [...] WHERE [...] AND id < 1000
+SELECT [...] WHERE [...] AND (id >= 1000 AND id < 2000)
+SELECT [...] WHERE [...] AND (id >= 2000 AND id < 3000)
+...
+SELECT [...] WHERE [...] AND id >= 99000
+```
+
+If any of the four partitioning options is provided, then all must be.
+
+The chosen partitionColumn must support the SQL comparison operators "<" and ">=".
+Any results where partitionColumn is null or otherwise not matched by those operators, will not be included.
+
+`PartitionLowerBound` and `PartitionUpperBound` do not bound or limit the results, they simply choose how many results are in each partition.
+Note that the first and last queries in the example above use `<` and `>=` to include all results.
+
+
 === DataFrame persistence
 
 It is also possible to persist DataFrames into Couchbase.
 The important part is that a `META_ID` (or different if configured) field exists which can be mapped to the unique Document ID.
 All the other fields in the DataFrame will be converted into JSON and stored as the document content.
 
-You can store `DataFrames` using both `couchbase.query` and `couchbase.kv`. We recommend using the KeyValue data source since it provides better performance out of the box if the usage pattern allows for it.
+You can store `DataFrames` using both `couchbase.query` and `couchbase.kv`.
+We recommend using the KeyValue data source since it provides better performance out of the box if the usage pattern allows for it.
 
-The following example reads data from a collection and writes the first 5 results into a different collection. Also, to showcase properties, they are used on both the read and the write side:
+The following example reads data from a collection and writes the first 5 results into a different collection.
+Also, to showcase properties, they are used on both the read and the write side:
 
 [source,scala]
 ----
@@ -149,9 +198,12 @@ include::example$SparkSQL.scala[tag=kvwrite,indent=0]
 ----
 
 === SaveMode Mapping
-SparkSQL DataFrames allow to configure how data is written to the data source by specifying a https://spark.apache.org/docs/latest/api/java/index.html?org/apache/spark/sql/SaveMode.html[SaveMode], of which there are four: `Append`, `Overwrite`, `ErrorIfExists` and `Ignore`.
 
-Couchbase has similar names for different write semantics: `Insert`, `Upsert` and `Replace`. The following tables descripe the mappings for both `couchbase.query` and `couchbase.kv`:
+SparkSQL DataFrames allow to configure how data is written to the data source by specifying a https://spark.apache.org/docs/latest/api/java/index.html?org/apache/spark/sql/SaveMode.html[SaveMode],
+of which there are four: `Append`, `Overwrite`, `ErrorIfExists`, and `Ignore`.
+
+Couchbase has similar names for different write semantics: `Insert`, `Upsert`, and `Replace`.
+The following tables descripe the mappings for both `couchbase.query` and `couchbase.kv`:
 
 Note that `SaveMode.Append` is not supported, since the operations are always writing the full document body (and not appending to one).
 
@@ -175,7 +227,7 @@ Note that `SaveMode.Append` is not supported, since the operations are always wr
 
 .couchbase.query mappings
 |===
-| SparkSQL | Couchbase SQL++
+| SparkSQL | Couchbase {sqlpp}
 
 | SaveMode.Overwrite
 | UPSERT INTO
@@ -227,7 +279,7 @@ For more information on Datasets, please refer to the http://spark.apache.org/do
 
 == Aggregate Push Down
 
-The following predicates are pushed down to both the query, analytics and Capella Columnar engines if possible:
+The following predicates are pushed down to both the query, analytics, and Capella Columnar engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`
@@ -237,4 +289,5 @@ The following predicates are pushed down to both the query, analytics and Capell
 
 They are supported both with and without grouping (`GROUP BY`).
 
-For performance reasons, this feature is enabled by default. If for some reason it should be disabled, the `PushDownAggregate` option can be used in which case Spark will handle the aggregations after receiving the results.
+For performance reasons, this feature is enabled by default.
+If for some reason it should be disabled, the `PushDownAggregate` option can be used in which case Spark will handle the aggregations after receiving the results.
