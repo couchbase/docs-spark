@@ -8,7 +8,7 @@
 * xref:streaming.adoc[Structured Streaming Support]
 * xref:spark-shell.adoc[Using the Spark Shell]
 * xref:pyspark.adoc[PySpark]
-* xref:columnar.adoc[Capella Columnar]
+* xref:columnar.adoc[Columnar Support]
 * xref:databricks.adoc[Databricks Support]
 * xref:configuration.adoc[Configuration]
 * xref:migration.adoc[Migration Guide]
