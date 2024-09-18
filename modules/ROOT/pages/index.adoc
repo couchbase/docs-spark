@@ -1,5 +1,6 @@
 = Introduction
 :page-topic-type: concept
+:page-toclevels: 2
 
 [abstract]
 The Couchbase Spark Connector provides first-class integration between your high performance Couchbase Server cluster and the Apache Spark data processing platform.
@@ -29,6 +30,11 @@ The following table lists the compatible versions:
 
 Note that if the internal Spark APIs do not break between minor versions, it is possible to use different version combinations.
 The table above shows the combination Couchbase tests and supports.
+
+=== Interface Stability
+
+include::7.6@sdk:shared:partial$interface-stability-pars.adoc[tag=interface-stability-section]
+
 
 == Contributing
 
