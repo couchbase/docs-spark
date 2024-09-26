@@ -6,8 +6,10 @@
 [abstract]
 Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
 
+
 NOTE: Capella Columnar support is currently at an xref:index.adoc#interface-stability[Uncommitted] level in the Couchbase Spark Connector.
 We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
+
 
 
 == Spark Configuration
@@ -69,6 +71,10 @@ Note this SQL is executed purely within Spark, and is not sent to the Capella Co
 
 
 == PySpark
+
+NOTE: PySpark support is currently at an xref:index.adoc#interface-stability[Uncommitted] level in the Couchbase Spark Connector.
+We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
+
 
 Capella Columnar can be accessed through PySpark.
 See our xref:pyspark.adoc[PySpark documentation] for more details.
