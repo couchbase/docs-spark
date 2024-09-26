@@ -1,13 +1,13 @@
 = PySpark
-:page-topic-type: concept
+:page-status: Developer Preview
 :description: You can use the Couchbase Spark Connector together with PySpark to quickly and easily explore your data.
 
 [abstract]
 {description}
 
 
-NOTE: PySpark support is currently at an Uncommitted level in the Couchbase Spark Connector.
-We encourage users to try it out and provide feedback, but there is a small chance that changes to the API may be required.
+NOTE: PySpark support is currently at an xref:index.adoc#interface-stability[Uncommitted] level in the Couchbase Spark Connector.
+We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
 
 
 == Using the Couchbase Spark Connector with PySpark
