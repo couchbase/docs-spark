@@ -7,9 +7,10 @@
 Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
 
 
-NOTE: Capella Columnar support is currently at an xref:index.adoc#interface-stability[Uncommitted] level in the Couchbase Spark Connector.
-We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
-
+NOTE: Developer Preview mode ("Preview Mode"), provides early access to features which may become generally available ("GA") in future releases and enables you to play with these features to get a sense of how they work.
+Preview Mode features and their use are subject to Couchbase's "Non-GA Offering Supplemental Terms", set forth in the License Agreement.
+Preview Mode features may not be functionally complete and are not intended for production use.
+They are intended for development and testing purposes only.
 
 
 == Spark Configuration
