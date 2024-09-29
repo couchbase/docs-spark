@@ -146,7 +146,7 @@ jupyter notebook
 And now the same example from the section above can be copy and pasted into the Jupyter UI, and run.
 There is no need to install Apache Spark first.
 
-Also see the notebook examples under xref:https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
+Also see the notebook examples under https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
 
 == Supported Operations
 
