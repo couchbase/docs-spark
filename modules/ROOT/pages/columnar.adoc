@@ -23,6 +23,7 @@ This works just like connecting to any other type of Couchbase cluster.
 ====
 Scala::
 +
+Change the cluster configuration options to match your own.
 --
 [source,scala]
 ----
@@ -32,6 +33,7 @@ include::example$Columnar.scala[tag=init,indent=0]
 
 PySpark::
 +
+Change the cluster configuration options to match your own, and provide the location of the Spark Connector library if needed (see the xref:pyspark.adoc[PySpark getting started] guide for more details).
 --
 [source,python]
 ----

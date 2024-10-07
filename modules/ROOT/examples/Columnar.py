@@ -6,11 +6,10 @@ spark = (SparkSession.builder
     # Note whether you need the .master(...) and .config("spark.jars"...) lines depends on how you are using Spark.
     # See our PySpark documentation for more details.
     .master("local[*]")
-    .config("spark.jars", """C:\\Users\\Graham Pople\\Downloads\\Couchbase-Spark-Connector_2.12-3.5.1\\spark-connector-assembly-3.5.1.jar""")
-    .config("spark.couchbase.connectionString", "couchbases://cb.kiofzclm8ogfldf.customsubdomain.nonprod-project-avengers.com")
-    .config("spark.couchbase.username", "test")
-    .config("spark.couchbase.password", "Password!1")
-    .config("spark.ssl.insecure", "true")
+    .config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar")
+    .config("spark.couchbase.connectionString", "couchbases://cb.your.columnar.connection.string.com")
+    .config("spark.couchbase.username", "YourColumnarUsername")
+    .config("spark.couchbase.password", "YourColumnarPassword")
     .getOrCreate())
 # end::init[]
 
