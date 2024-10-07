@@ -4,24 +4,41 @@
 
 
 [abstract]
-Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster over an encrypted connection. This section explains how.
+Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster. This section explains how.
 
+Capella Columnar clusters can be connected to using either Scala or PySpark.
+To get bootstrapped, users should view the xref:getting-started.adoc[Scala getting started] or xref:pyspark.adoc[PySpark getting started] guides.
 
 NOTE: Developer Preview mode ("Preview Mode"), provides early access to features which may become generally available ("GA") in future releases and enables you to play with these features to get a sense of how they work.
 Preview Mode features and their use are subject to Couchbase's "Non-GA Offering Supplemental Terms", set forth in the License Agreement.
 Preview Mode features may not be functionally complete and are not intended for production use.
 They are intended for development and testing purposes only.
 
-
 == Spark Configuration
 
 The first step as usual is to create a `SparkSession`, here connecting to your Capella Columnar cluster.
 This works just like connecting to any other type of Couchbase cluster.
 
+[{tabs}]
+====
+Scala::
++
+--
 [source,scala]
 ----
 include::example$Columnar.scala[tag=init,indent=0]
 ----
+--
+
+PySpark::
++
+--
+[source,python]
+----
+include::example$Columnar.py[tag=init,indent=0]
+----
+--
+====
 
 The following examples will use the `travel-sample` example set of data, which can be loaded through the UI.
 
@@ -30,20 +47,57 @@ The following examples will use the `travel-sample` example set of data, which c
 
 Let's start by reading a Spark DataFrame from the `airline` collection, which is in the `inventory` scope of the `travel-sample` database:
 
+
+[{tabs}]
+====
+Scala::
++
+--
 [source,scala]
 ----
 include::example$Columnar.scala[tag=reading-dataframe,indent=0]
 ----
+--
+
+PySpark::
++
+--
+[source,python]
+----
+include::example$Columnar.py[tag=reading-dataframe,indent=0]
+----
+--
+====
+
+
 
 This is a normal Spark DataFrame that we can count, iterate and so on.
 
+[{tabs}]
+====
+Scala::
++
+--
 [source,scala]
 ----
 include::example$Columnar.scala[tag=processing-dataframe,indent=0]
 ----
+--
+
+PySpark::
++
+--
+[source,python]
+----
+include::example$Columnar.py[tag=processing-dataframe,indent=0]
+----
+--
+====
+
 
 
 == Reading a Dataset
+(Supported in Scala only, as Apache Spark does not support Datasets via PySpark.)
 
 It can be preferable to read into a Spark `Dataset` rather than a DataFrame, as this lets us use Scala case classes directly.
 
@@ -63,38 +117,27 @@ include::example$Columnar.scala[tag=reading-dataset,indent=0]
 
 We can use Spark's `createOrReplaceTempView` to create a temporary view from a DataFrame, which we can then run Spark SQL on (which creates another DataFrame):
 
+
+[{tabs}]
+====
+Scala::
++
+--
 [source,scala]
 ----
 include::example$Columnar.scala[tag=sql,indent=0]
 ----
+--
+
+PySpark::
++
+--
+[source,python]
+----
+include::example$Columnar.py[tag=sql,indent=0]
+----
+--
+====
 
 Note this SQL is executed purely within Spark, and is not sent to the Capella Columnar cluster.
 
-
-== PySpark
-
-NOTE: PySpark support is currently at an xref:index.adoc#interface-stability[Uncommitted] level in the Couchbase Spark Connector.
-We encourage users to try it out and provide feedback, but there is a possibility that changes to the API may be required.
-
-
-Capella Columnar can be accessed through PySpark.
-See our xref:pyspark.adoc[PySpark documentation] for more details.
-
-[source,python]
-----
-from pyspark.sql import SparkSession
-
-spark = SparkSession.builder \
-    .appName("Couchbase Spark Connector Columnar Example") \
-    .config("spark.couchbase.connectionString", "couchbases://your-columnar-endpoint.cloud.couchbase.com.com") \
-    .config("spark.couchbase.username", "username") \
-    .config("spark.couchbase.password", "password") \
-    .getOrCreate()
-
-df = (spark.read.format("couchbase.columnar")
-      .option("database", "travel-sample")
-      .option("scope", "inventory")
-      .option("collection", "airline")
-      .load())
-df.show()
-----
