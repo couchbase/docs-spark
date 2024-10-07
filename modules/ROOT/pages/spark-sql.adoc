@@ -179,6 +179,16 @@ Any results where partitionColumn is null or otherwise not matched by those oper
 `PartitionLowerBound` and `PartitionUpperBound` do not bound or limit the results, they simply choose how many results are in each partition.
 Note that the first and last queries in the example above use `<` and `>=` to include all results.
 
+=== Partitioning performance tips
+When using query partitioning, users are often interested in obtaining the highest throughput possible.
+Internal testing has found these tips will provide the best possible performance:
+
+* Duplicating or replicating the GSI indexes used by the query, so that multiple query nodes are not bottlenecked by going to a single GSI node.
+* Increasing the data service reader and writer threads.
+* Ensuring the disks used can provide sufficient throughput/IOPS.
+* Increasing the number of Couchbase nodes, and the resources (cores, memory, disk) allocated to each.
+* Increasing the count of Spark worker nodes, and the number of cores on each (each core can execute one partition at a time).
+* Ensuring sufficient network bandwidth is available.
 
 === DataFrame persistence
 
