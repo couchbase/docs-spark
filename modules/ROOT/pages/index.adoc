@@ -3,7 +3,7 @@
 :page-toclevels: 2
 
 [abstract]
-The Couchbase Spark Connector provides first-class integration between your high performance Couchbase Server cluster and the Apache Spark data processing platform.
+The Couchbase Spark Connector provides first-class integration between your high performance Couchbase Server cluster and the Apache Spark data processing platform, and can be used from both Scala and PySpark.
 
 == Compatibility
 
@@ -13,6 +13,9 @@ The following table lists the compatible versions:
 .Couchbase Spark connector compatibility
 |===
 | Couchbase Spark connector version | Apache Spark target version
+
+| 3.5.x
+| 3.5.x
 
 | 3.3.x
 | 3.3.x
