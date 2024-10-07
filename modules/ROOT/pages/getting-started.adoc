@@ -1,9 +1,11 @@
-= Getting Started
+= Getting Started (Scala)
 :page-topic-type: concept
 // :page-aliases: 7.0@server:connectors:spark-1.0/spark-shell
 
 [abstract]
-To get started with the Couchbase Spark connector quickly, learn how to add the connector to your Spark project and run simple queries.
+To get started with the Couchbase Spark connector quickly with Scala, learn how to add the connector to your Spark project and run simple queries.
+
+This page is for Scala users - Python users should go to the xref:pyspark.adoc[PySpark getting started] guide.
 
 == Quickstart
 

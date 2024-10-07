@@ -12,6 +12,7 @@ Preview Mode features may not be functionally complete and are not intended for 
 They are intended for development and testing purposes only.
 
 
+This page is for PySpark users - Scala users should go to the xref:getting-started.adoc[Scala getting started] guide.
 
 == Using the Couchbase Spark Connector with PySpark
 
@@ -20,7 +21,7 @@ To use the Couchbase Spark Connector with PySpark:
 Download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
 This file contains the connector.
 
-There are many ways to run PySpark, and this documention will cover the most common three:
+There are many ways to run PySpark, and this documentation will cover the most common three:
 
 . Creating a Python script and submitting it to a Spark cluster using `spark-submit`.
 . Creating a Python script and running it locally.
