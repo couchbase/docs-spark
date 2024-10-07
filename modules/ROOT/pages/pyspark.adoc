@@ -1,4 +1,4 @@
-= PySpark
+= Getting Started (PySpark)
 :page-status: Developer Preview
 :description: You can use the Couchbase Spark Connector together with PySpark to quickly and easily explore your data.
 
