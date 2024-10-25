@@ -6,6 +6,8 @@ Spark operates on resilient distributed datasets (RDDs). Higher level concepts l
 
 When you need to extract data out of Couchbase, the Couchbase Spark connector creates RDDs for you. In addition, you can also persist data to Couchbase using RDDs.
 
+NOTE: PySpark users should note that all the RDD operations detailed on this page are Scala-only, as they require Scala language features such as implicits that cannot be exposed via Apache's PySpark API.  However, PySpark does support all the higher-level DataFrame operations that are detailed on xref:spark-sql.adoc[DataFrames and Datasets].
+
 The following spark context is configured to work on the `travel-sample` bucket and can be used to follow the examples. Please configure your connectionString, username and password accordingly.
 
 [source,scala]
