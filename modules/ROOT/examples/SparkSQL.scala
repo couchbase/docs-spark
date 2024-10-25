@@ -1,6 +1,7 @@
+import com.couchbase.spark.columnar.ColumnarOptions
 import com.couchbase.spark.kv.KeyValueOptions
 import com.couchbase.spark.query.QueryOptions
-import org.apache.spark.sql.{SaveMode, SparkSession}
+import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 
 object SparkSQL {
@@ -80,6 +81,18 @@ object SparkSQL {
     }
 
     {
+      // tag::partitioning[]
+      spark.read
+        .format("couchbase.query")
+        .option(QueryOptions.PartitionColumn, "id")
+        .option(QueryOptions.PartitionLowerBound, "1")
+        .option(QueryOptions.PartitionUpperBound, "100000")
+        .option(QueryOptions.PartitionCount, "100")
+        .load()
+      // end::partitioning[]
+    }
+
+    {
       // tag::manualschema[]
       val airlines = spark.read
         .format("couchbase.query")
@@ -89,6 +102,13 @@ object SparkSQL {
         ))
         .load()
       // end::manualschema[]
+
+      // tag::simplesort[]
+      airlines
+        .select("name", "callsign")
+        .sort(airlines("callsign").desc)
+        .show(10)
+      // end::simplesort[]
     }
 
     {
@@ -107,6 +127,18 @@ object SparkSQL {
         .option(KeyValueOptions.Durability, KeyValueOptions.MajorityDurability)
         .save()
       // end::kvwrite[]
+    }
+
+    {
+      val df: DataFrame = null
+      // tag::writing[]
+      df.write.format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "test-bucket")
+        .option(KeyValueOptions.Scope, "test-scope")
+        .option(KeyValueOptions.Collection, "test-collection")
+        .option(KeyValueOptions.IdFieldName, "YourIdColumn")
+        .save()
+      // end::writing[]
     }
 
     {

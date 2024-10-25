@@ -4,7 +4,7 @@
 * xref:pyspark.adoc[Getting Started (PySpark)]
 * xref:dev-workflow.adoc[Development Workflow]
 * xref:working-with-rdds.adoc[Working With RDDs]
-* xref:spark-sql.adoc[Spark SQL Integration]
+* xref:spark-sql.adoc[DataFrames and Datasets]
 * xref:java-api.adoc[Java API]
 * xref:streaming.adoc[Structured Streaming Support]
 * xref:spark-shell.adoc[Using the Spark Shell]

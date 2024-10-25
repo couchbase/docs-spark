@@ -1,56 +1,66 @@
-= Spark SQL Integration
+= DataFrames, Datasets and SQL
 :page-topic-type: concept
-:description: Spark SQL allows accessing query, analytics, and Capella Columnar in powerful and convenient ways.
+:description: Spark allows accessing query, analytics, and Capella Columnar in powerful and convenient ways.
 
 
 [abstract]
 {description}
 
-All query examples presented on this page at least require a primary index on the `travel-sample` data set -- or on each collection respectively.
+While Apache's low-level xref:working-with-rdds.adoc[RDDs] are powerful, Apache Spark now encourages users towards the higher-level DataFrames and Datasets.
+Let's see how to use those with Couchbase.
+
+Before you can create DataFrames or Datasets with Couchbase, you need to create a `SparkSession`.
+See xref:getting-started.adoc[Getting Started (Scala)] or xref:pyspark.adoc[Getting Start(PySpark)]
+
+== Running examples
+All query examples presented on this page at least require the `travel-sample` dataset to be installed on your Couchbase cluster, with a primary index.
 If you haven't done so already, you can create a primary index by executing this {sqlpp} statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
 To use the analytics examples, corresponding datasets or collection mappings should be created.
 
 Capella Columnar is also supported, and is xref:columnar.adoc[documented separately].
 
-
 == DataFrames
 
-Before you can create a DataFrame with Couchbase, you need to create a `SparkSession`.
-
-[source,scala]
-----
-include::example$SparkSQL.scala[tag=context,indent=0]
-----
-
-A `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use.
+A read `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use.
 For `spark.read`, `couchbase.query`, `couchbase.analytics`, and `couchbase.columnar` are available.
 
+(For reading from the KV service - see xref:working-with-rdds.adoc[RDDs])
+
+[{tabs}]
+====
+Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=simpledf,indent=0]
 ----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=simpledf,indent=0]
+----
+====
 
 === Collections
 
-You'll often want the DataFrame to work with a specific Couchbase collection, which can be done with the following:
+You'll generally want the DataFrame to work with a specific Couchbase collection, which can be done with the following:
 [{tabs}]
 ====
-Query::
+Scala::
 +
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=query-collection,indent=0]
 ----
-If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
-
-[source,scala]
+PySpark::
++
+[source,python]
 ----
-include::example$SparkSQL.scala[tag=context-with-all-implicit-options,indent=0]
+include::example$DataFrames.py[tag=query-collection,indent=0]
 ----
-
-
-Columnar::
+Scala (Columnar)::
 +
 --
 [source,scala]
@@ -60,11 +70,19 @@ include::example$SparkSQL.scala[tag=columnar-collection,indent=0]
 --
 ====
 
+If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
+
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=context-with-all-implicit-options,indent=0]
+----
+
+
 === Schemas
 
 Spark requires a schema for all DataFrame and Dataset operations.
 
-The Couchbase Spark Connector will perform automatic schema inference based on all documents in the chosen collection -- or bucket if no collection was chosen.
+The Couchbase Spark Connector will perform automatic schema inference based on a random sampling of all documents in the chosen collection -- or bucket if no collection was chosen.
 This automatic inference can work well in cases where the data are very similar.
 
 If the data are not similar, there are two options: you can either provide a manual schema, or narrow down what documents the automatic schema inference acts on by providing explicit predicates.
@@ -72,10 +90,20 @@ If the data are not similar, there are two options: you can either provide a man
 For example, say the schema of the `airlines` collection evolves and we add a `"version": 2` field to identify documents that have the new schema.
 We can limit both the inference and the {sqlpp} executed from the DataFrame to only those documents, by providing a filter:
 
+[{tabs}]
+====
+Scala (Columnar)::
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=queryfilter,indent=0]
 ----
+PySpark (Columnar)::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=queryfilter,indent=0]
+----
+====
 
 You can call `airlines.printSchema()` to view the schema (either inferred or provided manually):
 
@@ -93,26 +121,39 @@ root
 
 Not only did it automatically infer the schema, it also added a `META_ID` field which corresponds to the document ID if applicable.
 
-A manual schema can also be provided if the automatic inference does not work properly:
+A manual schema can also be provided, and this is the recommended practice for production applications, to protect against future data changes:
 
+[{tabs}]
+====
+Scala::
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=manualschema,indent=0]
 ----
+====
 
 === DataFrame Operations
 
 Now that you have a DataFrame, you can apply all the operations that Spark SQL provides.
 A simple example would be to load specific fields from the DataFrame and print some of those records:
 
+
+[{tabs}]
+====
+Scala::
 [source,scala]
 ----
-airlines
-  .select("name", "callsign")
-  .sort(airlines("callsign").desc)
-  .show(10)
+include::example$SparkSQL.scala[tag=simplesort,indent=0]
 ----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=simplesort,indent=0]
+----
+====
 
+Results in:
 ----
 +-------+--------------------+
 |   name|            callsign|
@@ -134,10 +175,21 @@ airlines
 
 We can use Spark's `createOrReplaceTempView` to create a temporary view from a DataFrame, which we can then run Spark SQL on (which creates another DataFrame):
 
+
+[{tabs}]
+====
+Scala::
 [source,scala]
 ----
 include::example$Columnar.scala[tag=sql,indent=0]
 ----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=sql,indent=0]
+----
+====
 
 Note this SQL is executed purely within Spark, and is not sent to the Couchbase cluster.
 
@@ -152,15 +204,21 @@ So in some specific situations the user may wish to provide partitioning hints s
 
 In this example, say we are reading from an orders collection, where we know we have around 100,000 orders and want to partition into 100 {sqlpp} statements.
 Here we will partition on a numerical "id" column:
-```
-spark.read
-  .format("couchbase.query")
-  .option(QueryOptions.PartitionColumn, "id")
-  .option(QueryOptions.PartitionLowerBound, "1")
-  .option(QueryOptions.PartitionUpperBound, "100000")
-  .option(QueryOptions.PartitionCount, "100")
-  .load()
-```
+
+[{tabs}]
+====
+Scala::
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=partitioning,indent=0]
+----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=partitioning,indent=0]
+----
+====
 
 This will result in 100 partitions with {sqlpp} statements along the lines of
 ```
@@ -190,10 +248,13 @@ Internal testing has found these tips will provide the best possible performance
 * Increasing the count of Spark worker nodes, and the number of cores on each (each core can execute one partition at a time).
 * Ensuring sufficient network bandwidth is available.
 
-=== DataFrame persistence
+== DataFrame persistence
 
 It is also possible to persist DataFrames into Couchbase.
-The important part is that a `META_ID` (or different if configured) field exists which can be mapped to the unique Document ID.
+
+Couchbase documents require unique document ids, so this needs to be available in the DataFrame.
+By default the connector will look for a `META_ID` column, but this can be overridden with an option (see below).
+
 All the other fields in the DataFrame will be converted into JSON and stored as the document content.
 
 You can store `DataFrames` using both `couchbase.query` and `couchbase.kv`.
@@ -202,10 +263,40 @@ We recommend using the KeyValue data source since it provides better performance
 The following example reads data from a collection and writes the first 5 results into a different collection.
 Also, to showcase properties, they are used on both the read and the write side:
 
+
+[{tabs}]
+====
+Scala::
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=kvwrite,indent=0]
 ----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=kvwrite,indent=0]
+----
+====
+
+And to specify your own document id column for a DataFrame `df`:
+
+
+[{tabs}]
+====
+Scala::
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=writing,indent=0]
+----
+PySpark::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=writing,indent=0]
+----
+====
+
 
 === SaveMode Mapping
 
@@ -253,9 +344,11 @@ Note that `SaveMode.Append` is not supported, since the operations are always wr
 
 |===
 
-== Working with Datasets
-
+== Datasets
 You can call `.as[Target]` on your `DataFrame` to turn it into typesafe counterpart (most of the time a case class).
+
+(Note that Apache Spark only supports Datasets in Scala - there is no PySpark equivalent.)
+
 Consider having the following case class:
 
 [source,scala]
