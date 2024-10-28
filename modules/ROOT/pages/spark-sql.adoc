@@ -93,6 +93,7 @@ We can limit both the inference and the {sqlpp} executed from the DataFrame to o
 [{tabs}]
 ====
 Scala (Columnar)::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=queryfilter,indent=0]
@@ -126,6 +127,7 @@ A manual schema can also be provided, and this is the recommended practice for p
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=manualschema,indent=0]
@@ -141,6 +143,7 @@ A simple example would be to load specific fields from the DataFrame and print s
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=simplesort,indent=0]
@@ -179,6 +182,7 @@ We can use Spark's `createOrReplaceTempView` to create a temporary view from a D
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$Columnar.scala[tag=sql,indent=0]
@@ -208,6 +212,7 @@ Here we will partition on a numerical "id" column:
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=partitioning,indent=0]
@@ -267,6 +272,7 @@ Also, to showcase properties, they are used on both the read and the write side:
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=kvwrite,indent=0]
@@ -285,6 +291,7 @@ And to specify your own document id column for a DataFrame `df`:
 [{tabs}]
 ====
 Scala::
++
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=writing,indent=0]
