@@ -88,13 +88,14 @@ Or to set the certificate path:
 
 Please refer to the SDK documentation for the possible keys or values.
 
+[#_connecting_to_multiple_clusters]
 == Connecting to multiple Clusters
 
 NOTE: This feature is only available with Spark Connector 3.3.0 and later.
 
 It is possible to connect to more than one Couchbase Cluster when using the Spark Connector.
 
-To create more than one connection, a custom identifier prefixed by `:` needs to be provided at configuration time. The following examples configures a default environment that is always used and a `westcoast` environment that needs to be explicitly specified when performing an operation:
+To create more than one connection, a custom identifier prefixed by `:` needs to be provided at configuration time.The following examples configures a default environment that is always used and a `westcoast` environment that needs to be explicitly specified when performing an operation:
 
 [source,scala]
 ----

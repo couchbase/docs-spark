@@ -70,6 +70,8 @@ include::example$SparkSQL.scala[tag=columnar-collection,indent=0]
 --
 ====
 
+Note all query options are documented here xref:_query_options[Query Options] and all Capella Columnar options here xref:_columnar_options[Capella Columnar options].
+
 If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
 
 [source,scala]
@@ -78,6 +80,7 @@ include::example$SparkSQL.scala[tag=context-with-all-implicit-options,indent=0]
 ----
 
 
+[#_schemas]
 === Schemas
 
 Spark requires a schema for all DataFrame and Dataset operations.
@@ -197,6 +200,7 @@ include::example$DataFrames.py[tag=sql,indent=0]
 
 Note this SQL is executed purely within Spark, and is not sent to the Couchbase cluster.
 
+[#_dataframe_partitioning]
 == DataFrame partitioning
 
 By default, one DataFrame read or write with query will result in one {sqlpp} statement being executed.
@@ -305,6 +309,8 @@ include::example$DataFrames.py[tag=writing,indent=0]
 ----
 ====
 
+Note all key-value options are documented here xref:_kv_options[Key-Value options] and all query options are documented here xref:_query_options[Query Options].
+
 
 === SaveMode Mapping
 
@@ -390,9 +396,174 @@ include::example$SparkSQL.scala[tag=dsfetch,indent=0]
 
 For more information on Datasets, please refer to the http://spark.apache.org/docs/latest/sql-programming-guide.html#datasets[Spark Dataset Docs^].
 
+== Options
+
+[#_query_options]
+=== Query options
+The available options for query DataFrame and Dataset operations:
+
+.Query Options
+[cols="1,1,1,1"]
+|===
+| PySpark | Scala & Java | Option | Default
+
+| "bucket"
+| QueryOptions.Bucket
+| Name of a Couchbase bucket
+| Mandatory unless xref:configuration.adoc#_optional_properties[implicitBucket is set]
+
+| "scope"
+| QueryOptions.Scope
+| Name of a Couchbase scope
+| Defaults to the default scope on the specified bucket.  Note xref:configuration.adoc#_optional_properties[implicitScope can be set in Spark config].
+
+| "collection"
+| QueryOptions.Collection
+| Name of a Couchbase collection
+| Defaults to the default collection on the specified scope.  Note xref:configuration.adoc#_optional_properties[implicitCollection can be set in Spark config].
+
+| "timeout"
+| QueryOptions.Timeout
+| Overrides the default timeout.  The string must be parsable from a Scala Duration.
+| 75 seconds
+
+| "idFieldName"
+| QueryOptions.IdFieldName
+| Uses a different column when xref:_dataframe_persistence[persisting a DataFrame].
+| "META_ID" column
+
+| "filter"
+| QueryOptions.Filter
+| A SQL++ expression that will be interjected directly into the generated SQL++, e.g. `type = 'airport'`.
+| None
+
+| "partitionColumn"
+"partitionLowerBound"
+"partitionUpperBound"
+"partitionCount"
+| QueryOptions.PartitionColumn
+QueryOptions.PartitionLowerBound
+QueryOptions.PartitionUpperBound
+QueryOptions.PartitionCount
+| Control how xref:_dataframe_partitioning[manual DataFrame partitioning] is performed.
+| None
+
+| "scanConsistency"
+| QueryOptions.ScanConsistency
+| Valid options are "requestPlus" / QueryOptions.RequestPlusScanConsistency and "notBounded" / QueryOptions.NotBoundedScanConsistency.
+| "notBounded"
+
+| "inferLimit"
+| QueryOptions.InferLimit
+| Controls how many documents are initially sampled to perform xref:_schemas[schema inference].
+| 1000
+
+| "connectionIdentifier"
+| QueryOptions.ConnectionIdentifier
+| Allows a different configuration to be used than the default one.  See xref:configuration.adoc#_connecting_to_multiple_clusters[Connecting to multiple clusters].
+| Default connection
+|===
+
+[#_kv_options]
+=== KeyValue options
+The available options for query DataFrame and Dataset operations:
+
+.KeyValue Options
+[cols="1,1,1,1"]
+|===
+| PySpark | Scala & Java | Option | Default
+
+| "bucket"
+| KeyValueOptions.Bucket
+| Name of a Couchbase bucket
+| Mandatory unless xref:configuration.adoc#_optional_properties[implicitBucket is set]
+
+| "scope"
+| KeyValueOptions.Scope
+| Name of a Couchbase scope
+| Defaults to the default scope on the specified bucket.  Note xref:configuration.adoc#_optional_properties[implicitScope can be set in Spark config].
+
+| "collection"
+| KeyValueOptions.Collection
+| Name of a Couchbase collection
+| Defaults to the default collection on the specified scope.  Note xref:configuration.adoc#_optional_properties[implicitCollection can be set in Spark config].
+
+| "timeout"
+| KeyValueOptions.Timeout
+| Overrides the default timeout.  The string must be parsable from a Scala Duration.
+| 2.5 seconds for non-durable operations, 10 seconds for durable operations
+
+| "idFieldName"
+| KeyValueOptions.IdFieldName
+| Uses a different column when xref:_dataframe_persistence[persisting a DataFrame].
+| "META_ID" column
+
+| "durability"
+| KeyValueOptions.Durability
+| Valid options are "none", "majority" / KeyValueOptions.MajorityDurability, "majorityAndPersistToActive" / KeyValueOptions.MajorityAndPersistToActiveDurability, and "PersistToMajority" / KeyValueOptions.PersistToMajorityDurability.
+| "none"
+
+| "connectionIdentifier"
+| KeyValueOptions.ConnectionIdentifier
+| Allows a different configuration to be used than the default one.  See xref:configuration.adoc#_connecting_to_multiple_clusters[Connecting to multiple clusters].
+| Default connection
+|===
+
+
+[#_columnar_options]
+=== Capella Columnar options
+The available options for Capella Columnar DataFrame and Dataset operations:
+
+.Capella Columnar Options
+[cols="1,1,1,1"]
+|===
+| PySpark | Scala & Java | Option | Default
+
+| "database"
+| ColumnarOptions.Database
+| Name of a Couchbase Columnar database
+| Mandatory
+
+| "scope"
+| ColumnarOptions.Scope
+| Name of a Couchbase Columnar scope
+| Mandatory
+
+| "collection"
+| ColumnarOptions.Collection
+| Name of a Couchbase Columnar collection
+| Mandatory
+
+| "timeout"
+| ColumnarOptions.Timeout
+| Overrides the default timeout.  The string must be parsable from a Scala Duration.
+| 10 minutes
+
+| "filter"
+| ColumnarOptions.Filter
+| A SQL++ expression that will be interjected directly into the generated SQL++, e.g. `type = 'airport'`.
+| None
+
+| "scanConsistency"
+| ColumnarOptions.ScanConsistency
+| Valid options are "requestPlus" / ColumnarOptions.RequestPlusScanConsistency and "notBounded" / ColumnarOptions.NotBoundedScanConsistency.
+| "notBounded"
+
+| "inferLimit"
+| ColumnarOptions.InferLimit
+| Controls how many documents are initially sampled to perform xref:_schemas[schema inference].
+| 1000
+
+| "connectionIdentifier"
+| ColumnarOptions.ConnectionIdentifier
+| Allows a different configuration to be used than the default one.  See xref:configuration.adoc#_connecting_to_multiple_clusters[Connecting to multiple clusters].
+| Default connection
+|===
+
+
 == Aggregate Push Down
 
-The following predicates are pushed down to both the query, analytics, and Capella Columnar engines if possible:
+The following predicates are pushed down to the query, analytics, and Capella Columnar engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`
@@ -402,5 +573,5 @@ The following predicates are pushed down to both the query, analytics, and Capel
 
 They are supported both with and without grouping (`GROUP BY`).
 
-For performance reasons, this feature is enabled by default.
+For performance reasons, this feature is enabled by default, unless using xref:_dataframe_partitioning[manual partitioning].
 If for some reason it should be disabled, the `PushDownAggregate` option can be used in which case Spark will handle the aggregations after receiving the results.
