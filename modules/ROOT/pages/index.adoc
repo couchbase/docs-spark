@@ -3,16 +3,25 @@
 :page-toclevels: 2
 
 [abstract]
-The Couchbase Spark Connector provides first-class integration between your high performance Couchbase Server cluster and the Apache Spark data processing platform, and can be used from both Scala and PySpark.
+The Couchbase Spark Connector provides first-class integration between your high performance Couchbase cluster and the Apache Spark data processing platform, and can be used from both Scala and PySpark.
+
+Please see one of the following getting started guide:
+
+* xref:getting-started.adoc[Scala getting started].
+* xref:pyspark.adoc[PySpark getting started].
+* xref:java-api.adoc[Java getting started].
+
+The Couchbase Spark Connector supports any type of Couchbase cluster.  Users of Capella Columnar should see the xref:columnar.adoc[Columnar Support] page.
 
 == Compatibility
 
-Every version of the Couchbase Spark connector is compiled against a specific Spark target.
-The following table lists the compatible versions:
+Every version of the Couchbase Spark connector is compiled against a specific Apache Spark target.
 
-.Couchbase Spark connector compatibility
+E.g. if you are using Apache Spark 3.5.x, you should use a 3.5.x version of the Couchbase Spark Connector.
+
+.Couchbase Spark Connector compatibility
 |===
-| Couchbase Spark connector version | Apache Spark target version
+| Couchbase Spark Connector version | Apache Spark target version
 
 | 3.5.x
 | 3.5.x
