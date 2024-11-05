@@ -253,6 +253,7 @@ Internal testing has found these tips will provide the best possible performance
 * Increasing the count of Spark worker nodes, and the number of cores on each (each core can execute one partition at a time).
 * Ensuring sufficient network bandwidth is available.
 
+[#_dataframe_persistence]
 == DataFrame persistence
 
 It is also possible to persist DataFrames into Couchbase.
@@ -351,6 +352,8 @@ Note that `SaveMode.Append` is not supported, since the operations are always wr
 
 |===
 
+
+[#_datasets]
 == Datasets
 You can call `.as[Target]` on your `DataFrame` to turn it into typesafe counterpart (most of the time a case class).
 

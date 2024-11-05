@@ -23,15 +23,46 @@ This file contains the connector.
 
 There are many ways to run PySpark, and this documentation will cover the most common three:
 
+. Creating a Jupyter Notebook.
 . Creating a Python script and submitting it to a Spark cluster using `spark-submit`.
 . Creating a Python script and running it locally.
-. Creating a Jupyter Notebook.
 
 In addition the Couchbase Spark Connector can be used with Scala or PySpark in environments such as Databricks - see our xref:databricks.adoc[Databricks documentation].
 
 Note the following examples assume you already have a Couchbase cluster running, with the `travel-sample` sample data loaded.
 
-Also see the examples under xref:https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
+Also see the examples under xref:https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples], which include a guide to using the Couchbase Spark Connector together with Spark MLLib.
+
+
+== Using the Couchbase Spark Connector with Jupyter Notebooks
+
+The Couchbase Spark Connector can easily be used together with a Jupyter Notebook.
+
+To get started quickly, you can run the following commands.
+
+First, download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
+This file contains the connector.
+
+Now install Jupyter and PySpark.
+Note it is a standard Python best practice to do this inside a Python virtual environment (venv, Conda, etc.), but those details are omitted here:
+
+[source,console]
+----
+pip install jupyter pyspark
+----
+
+Run Jupyter:
+
+[source,console]
+----
+jupyter notebook
+----
+
+And now the same example from the section above can be copy and pasted into the Jupyter UI, and run.
+There is no need to install Apache Spark first.
+
+Also see the notebook examples under https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
+
 
 === Using `spark-submit`
 
@@ -120,74 +151,45 @@ pip install pyspark
 ----
 
 
-== Using the Couchbase Spark Connector with Jupyter Notebooks
-
-The Couchbase Spark Connector can easily be used together with a Jupyter Notebook.
-
-To get started quickly, you can run the following commands.
-
-First, download and extract the xref:download-links.adoc[current version of the Couchbase Spark Connector] to get the `spark-connector-assembly-VERSION.jar` file.
-This file contains the connector.
-
-Now install Jupyter and PySpark.
-Note it is a standard Python best practice to do this inside a Python virtual environment (venv, Conda, etc.), but those details are omitted here:
-
-[source,console]
-----
-pip install jupyter pyspark
-----
-
-Run Jupyter:
-
-[source,console]
-----
-jupyter notebook
-----
-
-And now the same example from the section above can be copy and pasted into the Jupyter UI, and run.
-There is no need to install Apache Spark first.
-
-Also see the notebook examples under https://github.com/couchbase/couchbase-spark-connector/tree/master/src/test/pyspark/examples[Couchbase Spark Connector PySpark examples].
-
 == Supported Operations
 
-The Couchbase Spark Connector supports all Spark DataFrame operations that the Couchbase Spark Connector supports with Scala.
+Apache recommends using DataFrames over RDDs, and the Couchbase Spark Connector allows access to all DataFrame operations.
 
-The Scala DataFrame examples in this documentation can be easily adapted into Python/PySpark code.  For instance:
+.Operations supported in PySpark
+[cols="1,1,1,1"]
+|===
+| Operation | Examples | PySpark Support | Scala & Java Support
 
-[{tabs}]
-====
-Scala::
-+
---
-[source,scala]
-----
-val airlines = spark.read.format("couchbase.columnar")
-    .option(ColumnarOptions.Database, "travel-sample")
-    .option(ColumnarOptions.Scope, "inventory")
-    .option(ColumnarOptions.Collection, "airline")
-    .load()
-----
---
+| xref:spark-sql.adoc[DataFrame reads]
+| spark.read.format("couchbase.query").load()
+spark.read.format("couchbase.analytics").load()
+spark.read.format("couchbase.columnar").load()
+| ✅
+| ✅
 
-Python::
-+
---
-[source,python]
-----
-airlines = (spark.read.format("couchbase.columnar")
-    .option("database", "travel-sample")
-    .option("scope", "inventory")
-    .option("collection", "airline")
-    .load())
-----
---
-====
+| xref:spark-sql.adoc#_dataframe_persistence[DataFrame writes]
+| airlines.write.format("couchbase.kv").save()
+airlines.write.format("couchbase.query").save()
+| ✅
+| ✅
 
-Generally all that is needed is to look up the string fields for options.
+| xref:spark-sql.adoc#_datasets[Datasets]
+| spark.read.format("couchbase.query").load().as[Airline]
+| ❌ (1)
+| ✅
 
-RDD operations are not supported, as these require Scala specifics that are not supportable through the PySpark interface.
-This includes reading from KV and executing arbitrary SQL++, both of which use RDDs.
+| xref:working-with-rdds.adoc[RDD operations]
+| spark.sparkContext.couchbaseGet(Seq(Get("airline_10"))).collect()
+spark.sparkContext.couchbaseQuery[JsonObject](...).collect()
+spark.sparkContext...couchbaseUpsert(...).collect()
+| ❌ (2)
+| ✅
+|===
+
+(1) Apache Spark does not support Datasets in PySpark, as they are specific to Scala case classes.
+
+(2) RDD operations are not supported, as these require Scala specifics that are not supportable through the PySpark interface.
+These operations include reading from KV and executing arbitrary SQL++, both of which use RDDs.
 
 
 == Troubleshooting PySpark
