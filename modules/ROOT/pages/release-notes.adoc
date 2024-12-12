@@ -5,6 +5,31 @@
 Release notes for the Spark Connector.
 
 
+== Couchbase Spark Connector 3.5.2 (12 December 2024)
+
+Version 3.5.2 is built and tested against Spark 3.5.3, and supports Scala 2.12 and 2.13.
+
+This release focuses on the performance of query DataFrame reads (`spark.read.format("couchbase.query")`), with several major performance improvements resulting.
+All users are encouraged to upgrade to this version.
+
+=== Improvements
+* [SPARKC-212](https://couchbasecloud.atlassian.net/browse/SPARKC-212):
+Better distribute query read partitions so they are all approximately the same size, resulting in a performance improvement.
+* [SPARKC-209](https://couchbasecloud.atlassian.net/browse/SPARKC-209):
+Limits are now pushed down in DataFrame query reads, for a performance improvement.
+* [SPARKC-208](https://couchbasecloud.atlassian.net/browse/SPARKC-208):
+Move to Spark 3.5.3.
+* [SPARKC-207](https://couchbasecloud.atlassian.net/browse/SPARKC-207):
+Many improvements to logging, with the most useful lines now logged at INFO rather than DEBUG.
+
+=== Bugs
+* [SPARKC-210](https://couchbasecloud.atlassian.net/browse/SPARKC-210):
+Fixes a regression introduced with backpressure support in 3.3.4 that caused each query to stream significantly slower.
+* [SPARKC-211](https://couchbasecloud.atlassian.net/browse/SPARKC-211):
+Fixes a regression introduced with backpressure support in 3.3.4 that caused each query to get executed twice.
+* [SPARKC-206](https://couchbasecloud.atlassian.net/browse/SPARKC-206):
+Manual partitioning does not interact well with groupBy.
+
 == Couchbase Spark Connector 3.5.1 (4 September 2024)
 
 Version 3.5.1 is built and tested against Spark 3.5.1, and supports Scala 2.12 and 2.13.
