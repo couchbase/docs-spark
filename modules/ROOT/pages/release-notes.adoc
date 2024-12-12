@@ -24,11 +24,11 @@ Many improvements to logging, with the most useful lines now logged at INFO rath
 
 === Bugs
 * [SPARKC-210](https://couchbasecloud.atlassian.net/browse/SPARKC-210):
-Fixes a regression introduced with backpressure support in 3.3.4 that caused each query to stream significantly slower.
+Fixes a 3.3.4 regression that caused each read query to stream significantly slower.
 * [SPARKC-211](https://couchbasecloud.atlassian.net/browse/SPARKC-211):
-Fixes a regression introduced with backpressure support in 3.3.4 that caused each query to get executed twice.
+Fixes a 3.3.4 regression that caused each read query to get executed twice.
 * [SPARKC-206](https://couchbasecloud.atlassian.net/browse/SPARKC-206):
-Manual partitioning does not interact well with groupBy.
+Fixes query read partitioning not working with aggregation operations such as groupBy and count.
 
 == Couchbase Spark Connector 3.5.1 (4 September 2024)
 

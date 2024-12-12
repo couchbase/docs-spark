@@ -8,9 +8,9 @@ Compile / scalaSource := baseDirectory.value / "modules" / "ROOT" / "examples"
 Compile / javaSource := baseDirectory.value / "modules" / "ROOT" / "examples"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "3.5.1",
-  "org.apache.spark" %% "spark-sql" % "3.5.1",
-  "com.couchbase.client" %% "spark-connector" % "3.5.1"
+  "org.apache.spark" %% "spark-core" % "3.5.2",
+  "org.apache.spark" %% "spark-sql" % "3.5.2",
+  "com.couchbase.client" %% "spark-connector" % "3.5.2"
 )
 
 resolvers += Resolver.mavenLocal
