@@ -161,27 +161,27 @@ Apache recommends using DataFrames over RDDs, and the Couchbase Spark Connector 
 | Operation | Examples | PySpark Support | Scala & Java Support
 
 | xref:spark-sql.adoc[DataFrame reads]
-| spark.read.format("couchbase.query").load()
-spark.read.format("couchbase.analytics").load()
-spark.read.format("couchbase.columnar").load()
+| * `spark.read.format("couchbase.query").load()`
+* `spark.read.format("couchbase.analytics").load()`
+* `spark.read.format("couchbase.columnar").load()`
 | ✅
 | ✅
 
 | xref:spark-sql.adoc#_dataframe_persistence[DataFrame writes]
-| airlines.write.format("couchbase.kv").save()
-airlines.write.format("couchbase.query").save()
+| * `airlines.write.format("couchbase.kv").save()`
+* `airlines.write.format("couchbase.query").save()`
 | ✅
 | ✅
 
 | xref:spark-sql.adoc#_datasets[Datasets]
-| spark.read.format("couchbase.query").load().as[Airline]
+| `spark.read.format("couchbase.query").load().as[Airline]`
 | ❌ (1)
 | ✅
 
 | xref:working-with-rdds.adoc[RDD operations]
-| spark.sparkContext.couchbaseGet(Seq(Get("airline_10"))).collect()
-spark.sparkContext.couchbaseQuery[JsonObject](...).collect()
-spark.sparkContext...couchbaseUpsert(...).collect()
+| * `spark.sparkContext.couchbaseGet(Seq(Get("airline_10"))).collect()`
+* `spark.sparkContext.couchbaseQuery[JsonObject](...).collect()`
+* `spark.sparkContext...couchbaseUpsert(...).collect()`
 | ❌ (2)
 | ✅
 |===
@@ -200,7 +200,7 @@ If you see errors mentioning `NoSuchMethodError`, this is very likely the cause.
 
 The versions can be checked with the following:
 
-[source,sh]
+[source,python]
 ----
 from py4j.java_gateway import java_import
 from pyspark.sql import SparkSession
@@ -208,7 +208,7 @@ import pyspark
 
 print(f"Versions: pyspark.__version__={pyspark.__version__}")
 
-spark = SparkSession.builder ... // copy from code above
+spark = SparkSession.builder # copy from code above
 
 # Access the Spark Context's JVM directly, to check the Scala version (which must be compatible with the Couchbase Spark Connector)
 sc = spark.sparkContext
