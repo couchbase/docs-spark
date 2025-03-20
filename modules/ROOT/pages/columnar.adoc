@@ -1,5 +1,4 @@
 = Capella Columnar Support
-:page-status: Developer Preview
 :nav-title: Columnar Support
 
 
@@ -9,10 +8,6 @@ Connecting to Capella Columnar is very similar to connecting to any Couchbase cl
 Capella Columnar clusters can be connected to using either Scala or PySpark.
 To get bootstrapped, users should view the xref:getting-started.adoc[Scala getting started] or xref:pyspark.adoc[PySpark getting started] guides.
 
-NOTE: Developer Preview mode ("Preview Mode"), provides early access to features which may become generally available ("GA") in future releases and enables you to play with these features to get a sense of how they work.
-Preview Mode features and their use are subject to Couchbase's "Non-GA Offering Supplemental Terms", set forth in the License Agreement.
-Preview Mode features may not be functionally complete and are not intended for production use.
-They are intended for development and testing purposes only.
 
 == Spark Configuration
 
