@@ -1,16 +1,9 @@
 = Getting Started (PySpark)
-:page-status: Developer Preview
 :page-toclevels: 2
 :description: You can use the Couchbase Spark Connector together with PySpark to quickly and easily explore your data.
 
 [abstract]
 {description}
-
-
-NOTE: Developer Preview mode ("Preview Mode"), provides early access to features which may become generally available ("GA") in future releases and enables you to play with these features to get a sense of how they work.
-Preview Mode features and their use are subject to Couchbase's "Non-GA Offering Supplemental Terms", set forth in the License Agreement.
-Preview Mode features may not be functionally complete and are not intended for production use.
-They are intended for development and testing purposes only.
 
 
 This page is for PySpark users -- Scala users should go to the xref:getting-started.adoc[Scala getting started] guide.
