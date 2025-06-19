@@ -4,6 +4,41 @@
 [abstract]
 Release notes for the Spark Connector.
 
+== Couchbase Spark Connector 3.3.6 (June 2025)
+Important: most users should use the 3.5 series of the Spark Connector, which is compatible with Apache Spark 3.5.  
+
+This 3.3.4 connector release is for users of Apache Spark 3.3 and primarily backports several important performance improvements from the 3.5 series.
+It also adds some useful new features, which will be made available in the 3.5 series in a future release.
+
+Version 3.3.6 is built and tested against Spark 3.3.4, and uses Couchbase Scala SDK 1.8.2 internally.
+
+=== New Features
+* https://couchbasecloud.atlassian.net/browse/SPARKC-231[SPARKC-231]:
+Add KV replace support for DataFrame writes
+* https://couchbasecloud.atlassian.net/browse/SPARKC-196[SPARKC-196]:
+Support authentication with client certificates.
+See xref:configuration.adoc[Client Certificates] for more information.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-230[SPARKC-230]:
+Add failure reporting and handling for individual operations.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-233[SPARKC-233]:
+Add CAS to query DataFrame reads and KV DataFrame writes.
+
+=== Improvements
+* https://couchbasecloud.atlassian.net/browse/SPARKC-212[SPARKC-212]:
+Better distribute query read partitions so they are all approximately the same size, resulting in a performance improvement.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-209[SPARKC-209]:
+Limits are now pushed down in DataFrame query reads, for a performance improvement.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-207[SPARKC-207]:
+Many improvements to logging, with the most useful lines now logged at INFO rather than DEBUG.
+
+=== Bugs
+* https://couchbasecloud.atlassian.net/browse/SPARKC-210[SPARKC-210]:
+Fixes a 3.3.4 regression that caused each read query to stream significantly slower.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-211[SPARKC-211]:
+Fixes a 3.3.4 regression that caused each read query to get executed twice.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-206[SPARKC-206]:
+Fixes query read partitioning not working with aggregation operations such as groupBy and count.
+
 
 == Couchbase Spark Connector 3.5.2 (12 December 2024)
 
@@ -13,21 +48,21 @@ This release focuses on the performance of query DataFrame reads (`spark.read.fo
 All users are encouraged to upgrade to this version.
 
 === Improvements
-* [SPARKC-212](https://couchbasecloud.atlassian.net/browse/SPARKC-212):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-212[SPARKC-212]:
 Better distribute query read partitions so they are all approximately the same size, resulting in a performance improvement.
-* [SPARKC-209](https://couchbasecloud.atlassian.net/browse/SPARKC-209):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-209[SPARKC-209]:
 Limits are now pushed down in DataFrame query reads, for a performance improvement.
-* [SPARKC-208](https://couchbasecloud.atlassian.net/browse/SPARKC-208):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-208[SPARKC-208]:
 Move to Spark 3.5.3.
-* [SPARKC-207](https://couchbasecloud.atlassian.net/browse/SPARKC-207):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-207[SPARKC-207]:
 Many improvements to logging, with the most useful lines now logged at INFO rather than DEBUG.
 
 === Bugs
-* [SPARKC-210](https://couchbasecloud.atlassian.net/browse/SPARKC-210):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-210[SPARKC-210]:
 Fixes a 3.3.4 regression that caused each read query to stream significantly slower.
-* [SPARKC-211](https://couchbasecloud.atlassian.net/browse/SPARKC-211):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-211[SPARKC-211]:
 Fixes a 3.3.4 regression that caused each read query to get executed twice.
-* [SPARKC-206](https://couchbasecloud.atlassian.net/browse/SPARKC-206):
+* https://couchbasecloud.atlassian.net/browse/SPARKC-206[SPARKC-206]:
 Fixes query read partitioning not working with aggregation operations such as groupBy and count.
 
 == Couchbase Spark Connector 3.5.1 (4 September 2024)

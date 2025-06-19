@@ -6,7 +6,7 @@ All production-ready Couchbase Spark connector artifacts are downloadable throug
 Prerelease versions are available through our Couchbase Maven repository for easy consumption.
 The same Couchbase Spark connector library is used for both Scala and PySpark.
 
-== Current Release 3.5.2
+== Current Release 3.5.3
 
 From its 3.5.0 release, the connector supports both Scala 2.12 and Scala 2.13.
 
@@ -16,28 +16,28 @@ The coordinates for the artifacts are:
 
 * *GroupId:* com.couchbase.client
 * *ArtifactId:* spark-connector_2.12
-* *Version:* 3.5.2
+* *Version:* 3.5.3
 
 .Scala 2.13:
 
 * *GroupId:* com.couchbase.client
 * *ArtifactId:* spark-connector_2.13
-* *Version:* 3.5.2
+* *Version:* 3.5.3
 
 == Using from Scala
 If you are using Scala, here is the snippet you can use in your SBT project:
 
 [source,scala]
 ----
-libraryDependencies += "com.couchbase.client" %% "spark-connector" % "3.5.2"
+libraryDependencies += "com.couchbase.client" %% "spark-connector" % "3.5.3"
 ----
 
 and then follow the xref:getting-started.adoc[Scala getting started documentation].
 
 The library package can also be downloaded:
-https://packages.couchbase.com/clients/connectors/spark/3.5.2/Couchbase-Spark-Connector_2.12-3.5.2.zip[Download (Scala 2.12 / Java)^]
-| https://packages.couchbase.com/clients/connectors/spark/3.5.2/Couchbase-Spark-Connector_2.13-3.5.2.zip[Download (Scala 2.13 / Java)^]
-| https://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.5.2/api/com/couchbase/index.html[API Reference^]
+https://packages.couchbase.com/clients/connectors/spark/3.5.3/Couchbase-Spark-Connector_2.12-3.5.3.zip[Download (Scala 2.12 / Java)^]
+| https://packages.couchbase.com/clients/connectors/spark/3.5.3/Couchbase-Spark-Connector_2.13-3.5.3.zip[Download (Scala 2.13 / Java)^]
+| https://docs.couchbase.com/sdk-api/couchbase-spark-connector-3.5.3/api/com/couchbase/index.html[API Reference^]
 
 Note that the download also contains an assembled jar, which means they contain all the dependencies in one "fat jar".
 This means that you don't need to juggle multiple dependencies if you want to use the jar as part of Spark's command line access tools (like the shell) or add it to the classpath of workers.
@@ -47,7 +47,7 @@ The same library is used for PySpark.
 
 PySpark users should download the package:
 
-https://packages.couchbase.com/clients/connectors/spark/3.5.2/Couchbase-Spark-Connector_2.12-3.5.2.zip[Download for PySpark^]
+https://packages.couchbase.com/clients/connectors/spark/3.5.3/Couchbase-Spark-Connector_2.12-3.5.3.zip[Download for PySpark^]
 
 and then follow the xref:pyspark.adoc[PySpark documentation].
 
