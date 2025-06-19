@@ -1,3 +1,4 @@
+import com.couchbase.spark.DefaultConstants
 import com.couchbase.spark.columnar.ColumnarOptions
 import com.couchbase.spark.kv.KeyValueOptions
 import com.couchbase.spark.query.QueryOptions
@@ -124,7 +125,6 @@ object SparkSQL {
         .option(KeyValueOptions.Bucket, "test-bucket")
         .option(KeyValueOptions.Scope, "test-scope")
         .option(KeyValueOptions.Collection, "test-collection")
-        .option(KeyValueOptions.Durability, KeyValueOptions.MajorityDurability)
         .save()
       // end::kvwrite[]
     }
@@ -139,6 +139,56 @@ object SparkSQL {
         .option(KeyValueOptions.IdFieldName, "YourIdColumn")
         .save()
       // end::writing[]
+    }
+
+    {
+      // tag::savemode[]
+      val airlines = spark.read.format("couchbase.query")
+        .option(QueryOptions.Bucket, "travel-sample")
+        .option(QueryOptions.Scope, "inventory")
+        .option(QueryOptions.Collection, "airline")
+        .load()
+        .limit(5)
+
+      // Writing using a built-in Spark SaveMode
+      airlines.write.format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "test-bucket")
+        .option(KeyValueOptions.Scope, "test-scope")
+        .option(KeyValueOptions.Collection, "test-collection")
+        .mode(SaveMode.Append)
+        .save()
+
+      // Writing using one of the Couchbase WriteModes
+      airlines.write.format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "test-bucket")
+        .option(KeyValueOptions.Scope, "test-scope")
+        .option(KeyValueOptions.Collection, "test-collection")
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeReplace)
+        .save()
+      // end::savemode[]
+    }
+
+    {
+      // tag::cas[]
+      val airlines = spark.read.format("couchbase.query")
+        .option(QueryOptions.Bucket, "travel-sample")
+        .option(QueryOptions.Scope, "inventory")
+        .option(QueryOptions.Collection, "airline")
+        // Adds a field named "__META_CAS" to the DataFrame, with each document's CAS
+        .option(QueryOptions.OutputCas, "true")
+        .load()
+        .limit(5)
+
+      airlines.write.format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "test-bucket")
+        .option(KeyValueOptions.Scope, "test-scope")
+        .option(KeyValueOptions.Collection, "test-collection")
+        // Both enables CAS and specifies the field name to use (the constant here is "__META_CAS")
+        .option(KeyValueOptions.CasFieldName, DefaultConstants.DefaultCasFieldName)
+        // CAS is only supported with replace operations
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeReplace)
+        .save()
+      // end::cas[]
     }
 
     {
