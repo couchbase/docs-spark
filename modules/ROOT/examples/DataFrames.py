@@ -14,6 +14,8 @@ queryDf = spark.read.format("couchbase.query").load()
 
 analyticsDf = spark.read.format("couchbase.analytics").load()
 
+enterpriseAnalyticsDf = spark.read.format("couchbase.enterprise-analytics").load()
+
 columnarDf = spark.read.format("couchbase.columnar").load()
 # end::simpledf[]
 
@@ -33,6 +35,14 @@ airlines = (spark.read.format("couchbase.columnar")
             .load())
 # end::columnar-collection[]
 
+# tag::enterprise-analytics-collection[]
+airlines = (spark.read.format("couchbase.enterprise-analytics")
+            .option("database", "travel-sample")
+            .option("scope", "inventory")
+            .option("collection", "airline")
+            .load())
+# end::enterprise-analytics-collection[]
+
 # tag::queryfilter[]
 airlines = (spark.read
             .format("couchbase.query")
@@ -42,6 +52,16 @@ airlines = (spark.read
             .option("filter", "version = 2")
             .load())
 # end::queryfilter[]
+
+# tag::enterprise-analytics-filter[]
+airlines = (spark.read
+            .format("couchbase.enterprise-analytics")
+            .option("database", "travel-sample")
+            .option("scope", "inventory")
+            .option("collection", "airline")
+            .option("filter", "country = 'United States'")
+            .load())
+# end::enterprise-analytics-filter[]
 
 airlines.printSchema()
 

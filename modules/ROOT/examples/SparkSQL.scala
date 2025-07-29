@@ -1,5 +1,6 @@
 import com.couchbase.spark.DefaultConstants
 import com.couchbase.spark.columnar.ColumnarOptions
+import com.couchbase.spark.enterpriseanalytics.EnterpriseAnalyticsOptions
 import com.couchbase.spark.kv.KeyValueOptions
 import com.couchbase.spark.query.QueryOptions
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
@@ -43,6 +44,8 @@ object SparkSQL {
 
       val analyticsDf = spark.read.format("couchbase.analytics").load()
 
+      val enterpriseAnalyticsDf = spark.read.format("couchbase.enterprise-analytics").load()
+
       val columnarDf = spark.read.format("couchbase.columnar").load()
       // end::simpledf[]
     }
@@ -68,6 +71,16 @@ object SparkSQL {
     }
 
     {
+      // tag::enterprise-analytics-collection[]
+      val airlines = spark.read.format("couchbase.enterprise-analytics")
+        .option(EnterpriseAnalyticsOptions.Database, "travel-sample")
+        .option(EnterpriseAnalyticsOptions.Scope, "inventory")
+        .option(EnterpriseAnalyticsOptions.Collection, "airline")
+        .load()
+      // end::enterprise-analytics-collection[]
+    }
+
+    {
       // tag::queryfilter[]
       val airlines = spark.read
         .format("couchbase.query")
@@ -77,6 +90,20 @@ object SparkSQL {
         .option(QueryOptions.Filter, "version = 2")
         .load()
       // end::queryfilter[]
+
+      airlines.printSchema()
+    }
+
+    {
+      // tag::enterprise-analytics-filter[]
+      val airlines = spark.read
+        .format("couchbase.enterprise-analytics")
+        .option(EnterpriseAnalyticsOptions.Database, "travel-sample")
+        .option(EnterpriseAnalyticsOptions.Scope, "inventory")
+        .option(EnterpriseAnalyticsOptions.Collection, "airline")
+        .option(EnterpriseAnalyticsOptions.Filter, "country = 'United States'")
+        .load()
+      // end::enterprise-analytics-filter[]
 
       airlines.printSchema()
     }

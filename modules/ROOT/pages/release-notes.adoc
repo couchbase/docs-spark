@@ -4,6 +4,28 @@
 [abstract]
 Release notes for the Spark Connector.
 
+
+== Couchbase Spark Connector 3.5.3 (July 2025)
+
+Version 3.5.3 is built and tested against Spark 3.5.6, and supports Scala 2.12 and 2.13.
+
+The main feature in this release is support for Couchbase Enterprise Analytics.
+
+=== New Features
+
+* https://couchbasecloud.atlassian.net/browse/SPARKC-235[SPARKC-235]:
+Support Enterprise Analytics.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-233[SPARKC-233]:
+Add CAS to query DataFrame reads and KV DataFrame writes.
+* https://couchbasecloud.atlassian.net/browse/SPARKC-231[SPARKC-231]:
+Add KV replace support for DataFrame writes
+* https://couchbasecloud.atlassian.net/browse/SPARKC-230[SPARKC-230]:
+Add failure reporting and handling for individual operations.
+
+=== Bug fixes
+* https://couchbasecloud.atlassian.net/browse/SPARKC-213[SPARKC-213]:
+`couchbase.query` write with `SaveMode.Ignore` throwing unexpected `DocumentExistsException`.
+
 == Couchbase Spark Connector 3.3.6 (June 2025)
 Important: most users should use the 3.5 series of the Spark Connector, which is compatible with Apache Spark 3.5.  
 

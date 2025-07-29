@@ -1,6 +1,6 @@
 = DataFrames, Datasets and SQL
 :page-topic-type: concept
-:description: Spark allows accessing query, analytics, and Capella Columnar in powerful and convenient ways.
+:description: Spark allows accessing query, analytics, Enterprise Analytics, and Capella Columnar in powerful and convenient ways.
 
 
 [abstract]
@@ -16,14 +16,14 @@ See xref:getting-started.adoc[Getting Started (Scala)] or xref:pyspark.adoc[Gett
 All query examples presented on this page at least require the `travel-sample` dataset to be installed on your Couchbase cluster, with a primary index.
 If you haven't done so already, you can create a primary index by executing this {sqlpp} statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
-To use the analytics examples, corresponding datasets or collection mappings should be created.
+To use the operational analytics examples, corresponding datasets or collection mappings should be created.
 
-Capella Columnar is also supported, and is xref:columnar.adoc[documented separately].
+Enterprise Analytics is also supported, and provides enhanced analytics capabilities for enterprise environments.
 
 == DataFrames
 
 A read `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use.
-For `spark.read`, `couchbase.query`, `couchbase.analytics`, and `couchbase.columnar` are available.
+For `spark.read`, `couchbase.query`, `couchbase.analytics`, `couchbase.enterprise-analytics`, and `couchbase.columnar` are available.
 
 (For reading from the KV service - see xref:working-with-rdds.adoc[RDDs])
 
@@ -68,9 +68,25 @@ Scala (Columnar)::
 include::example$SparkSQL.scala[tag=columnar-collection,indent=0]
 ----
 --
+Scala (Enterprise Analytics)::
++
+--
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=enterprise-analytics-collection,indent=0]
+----
+--
+PySpark (Enterprise Analytics)::
++
+--
+[source,python]
+----
+include::example$DataFrames.py[tag=enterprise-analytics-collection,indent=0]
+----
+--
 ====
 
-Note all query options are documented here xref:_query_options[Query Options] and all Capella Columnar options here xref:_columnar_options[Capella Columnar options].
+Note all query options are documented here xref:_query_options[Query Options], all Capella Columnar options here xref:_columnar_options[Capella Columnar options], and all Enterprise Analytics options here xref:_enterprise_analytics_options[Enterprise Analytics options].
 
 If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
 
@@ -106,6 +122,18 @@ PySpark (Columnar)::
 [source,python]
 ----
 include::example$DataFrames.py[tag=queryfilter,indent=0]
+----
+Scala (Enterprise Analytics)::
++
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=enterprise-analytics-filter,indent=0]
+----
+PySpark (Enterprise Analytics)::
++
+[source,python]
+----
+include::example$DataFrames.py[tag=enterprise-analytics-filter,indent=0]
 ----
 ====
 
@@ -520,6 +548,51 @@ QueryOptions.PartitionCount
 | "__META_CAS"
 |===
 
+[#_enterprise_analytics_options]
+=== Enterprise Analytics options
+The available options for Enterprise Analytics DataFrame and Dataset operations:
+
+.Enterprise Analytics Options
+[cols="1,1,1,1"]
+|===
+| PySpark | Scala & Java | Option | Default
+
+| "database"
+| EnterpriseAnalyticsOptions.Database
+| Name of an Enterprise Analytics database
+| Mandatory
+
+| "scope"
+| EnterpriseAnalyticsOptions.Scope
+| Name of an Enterprise Analytics scope
+| Mandatory
+
+| "collection"
+| EnterpriseAnalyticsOptions.Collection
+| Name of an Enterprise Analytics collection
+| Mandatory
+
+| "timeout"
+| EnterpriseAnalyticsOptions.Timeout
+| Overrides the default timeout.  The string must be parsable from a Scala Duration.
+| 10 minutes
+
+| "filter"
+| EnterpriseAnalyticsOptions.Filter
+| A SQL++ expression that will be interjected directly into the generated SQL++, e.g. `type = 'airport'`.
+| None
+
+| "scanConsistency"
+| EnterpriseAnalyticsOptions.ScanConsistency
+| Valid options are "requestPlus" / EnterpriseAnalyticsOptions.RequestPlusScanConsistency and "notBounded" / EnterpriseAnalyticsOptions.NotBoundedScanConsistency.
+| "notBounded"
+
+| "inferLimit"
+| EnterpriseAnalyticsOptions.InferLimit
+| Controls how many documents are initially sampled to perform xref:_schemas[schema inference].
+| 1000
+|===
+
 [#_kv_options]
 === KeyValue options
 The available options for query DataFrame and Dataset operations:
@@ -649,7 +722,7 @@ The available options for Capella Columnar DataFrame and Dataset operations:
 
 == Aggregate Push Down
 
-The following predicates are pushed down to the query, analytics, and Capella Columnar engines if possible:
+The following predicates are pushed down to the query, operational analytics, Enterprise Analytics, and Capella Columnar engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`

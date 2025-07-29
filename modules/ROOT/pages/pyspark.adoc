@@ -158,6 +158,7 @@ Apache recommends using DataFrames over RDDs, and the Couchbase Spark Connector 
 | xref:spark-sql.adoc[DataFrame reads]
 | * `spark.read.format("couchbase.query").load()`
 * `spark.read.format("couchbase.analytics").load()`
+* `spark.read.format("couchbase.enterprise-analytics").load()`
 * `spark.read.format("couchbase.columnar").load()`
 | ✅
 | ✅
