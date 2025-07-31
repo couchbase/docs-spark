@@ -1,4 +1,4 @@
-= DataFrames, Datasets and SQL
+= DataFrames, Datasets, and SQL
 :page-topic-type: concept
 :description: Spark allows accessing query, analytics, Enterprise Analytics, and Capella Columnar in powerful and convenient ways.
 
