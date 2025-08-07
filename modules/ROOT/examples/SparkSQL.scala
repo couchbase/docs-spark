@@ -196,6 +196,39 @@ object SparkSQL {
     }
 
     {
+      // tag::subdoc1[]
+      // Get a read Spark DataFrame from Couchbase (but could come from anywhere):
+      val queryData = spark.read.format("couchbase.query").load()
+
+      // Transform the data and prepare for subdoc operations
+      val transformedData = queryData
+        .select(
+          // This will be used as the document id, as usual
+          queryData("__META_ID"),
+          // The values in these columns will be used as the sub-document spec values
+          queryData("employee_name"),
+          queryData("employee_age"),
+        )
+        // Rename the columns to reflect the sub-document specs we wish to perform:
+        // Spec 1: Upsert the contents of the "name" column into the "user.name" field
+        .withColumnRenamed("name", "user.name")
+        // Spec 2: Upsert the contents of the "age" column into the "user.age" field
+        .withColumnRenamed("age", "user.age")
+      // end::subdoc1[]
+
+      // tag::subdoc2[]
+      transformedData.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        // SubdocUpsert is used which will create the docs if they don't exist, otherwise overwrite them
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+    // end::subdoc2[]
+    }
+
+    {
       // tag::cas[]
       val airlines = spark.read.format("couchbase.query")
         .option(QueryOptions.Bucket, "travel-sample")
