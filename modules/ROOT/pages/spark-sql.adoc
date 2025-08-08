@@ -501,12 +501,87 @@ And we will end up with "docId1" containing JSON:
 }
 ```
 This is a very simple example of what is possible with sub-document.
+
+To illustrate how some of the other operations work on this sample data:
+
+[source,json]
+----
+{
+  "user": {
+    "age": 28,
+    "phoneNumbers": ["+1 8267485570"]
+  }
+}
+----
+
+.Sub-document operation examples
+[cols="1,1,1"]
+|===
+| Operation and Path | Value | Result
+
+| "increment:user.age"
+| 1
+a|
+[source]
+----
+{
+  "user": {
+    "age": 29,
+    ...
+  }
+}
+----
+| "arrayAppend:user.phoneNumbers"
+| "+1 9833848745"
+a|
+[source,json]
+----
+{
+  "user": {
+    ...
+    "phoneNumbers": ["+1 8267485570", "+1 9833848745"]
+  }
+}
+----
+
+| "arrayInsert:user.phoneNumbers[1]"
+| "+1 9833848745"
+a|
+[source,json]
+----
+{
+  "user": {
+    ...
+    "phoneNumbers": ["+1 8267485570", "+1 9833848745"]
+  }
+}
+----
+
+| "remove:user.phoneNumbers"
+| <anything except null>
+a|
+[source,json]
+----
+{
+  "user": {
+    ... phoneNumbers removed
+  }
+}
+----
+
+|===
+
 See the https://docs.couchbase.com/scala-sdk/current/howtos/subdocument-operations.html[Scala SDK documentation on sub-document operations] for full details.
 
 
 N.b. `remove` sub-document spec operations are a special case as they will ignore the provided value.
 Hence any value can be used, except null, as Spark will automatically remove null columns before it passes the DataFrame to the connector.
 
+==== Sub-document error handling
+The same xref:#failure-handling-during-persistence[Failure handling during persistence] error handling detailed above can be used with sub-document operations, so the failures of individual sub-document KV calls do not have to fail the entire Spark job.
+
+Bear in mind that the specified sub-document specs will be applied to all documents in the DataFrame, so the specs should be chosen to be compatible.
+For instance, "insert" and "replace" operations will fail if the field exists or does not respectively, while "upsert" will succeed regardless, and so will often be a better choice.
 
 === DataFrame persistence performance tips
 We strongly recommend using the KeyValue data source for persisting DataFrames.
