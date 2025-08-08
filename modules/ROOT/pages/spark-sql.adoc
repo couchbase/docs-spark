@@ -420,6 +420,11 @@ For key-value DataFrame writes, this can be overridden with two error handling o
 `KeyValueOptions.ErrorBucket` will cause any operation failure to write a document back into a Couchbase collection, containing information identifying the failing document and the failure reason.
 This is the recommended approach.
 
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=error-handling,indent=0]
+----
+
 `KeyValueOptions.ErrorHandler` will call an error handling callback.
 An example implementation of the interface is provided with the connector, and users are free to write their own also.
 
@@ -437,151 +442,9 @@ This protects against documents being modified between the read and write points
 Such modifications will cause the operation to fail with a `CasMismatchException`.
 This will by default also cause the job to fail, which can be configured with the error handling options detailed elsewhere.
 
-Couchbase supports optimistic concurrency via CAS for query DataFrame reads and key-value DataFrame writes, which can be used with the Couchbase Spark Connector as shown:
-
-[source,scala]
-----
-include::example$SparkSQL.scala[tag=cas,indent=0]
-----
-
-This protects against documents being modified between the read and write points.
-Such modifications will cause the operation to fail with a `CasMismatchException`.
-This will by default also cause the job to fail, which can be configured with the error handling options detailed elsewhere.
-
-
 === Sub-document DataFrame KV persistence
 Couchbase supports sub-document writes that update only specific parts of the document, and users writing large documents may find this provides a performance optimisation, or allows concurrent actors to modify different parts of the same documents.
-The Spark Connector exposes the sub-document writes via both xref:working-with-rdds.adoc[RDDs] and DataFrames.
-
-The connector will ultimately perform sub-document KV mutateIn calls, one for each row/document in the DataFrame.
-
-For a mutateIn call, up to 16 sub-document 'specs' can be provided.  A spec has three elements:
-
-- A spec operation.  All sub-document spec operations are supported by the connector: upsert, insert, replace, remove, arrayAppend, arrayPrepend, arrayInsert, arrayAddUnique, increment and decrement.
-- A path where the operation acts, such as `user.name` (the `name` field of the `user` object), or `user.addresses[1]`.
-- A value, which can be any valid JSON value.  This is written to the path.
-
-For Spark, the core idea is that the DataFrame be setup by the application so that:
-
-- Each row represents a single document (as standard).  Each row will be written with a single mutateIn KV call by the Spark connector.
-- Each column represents a sub-document spec to be performed by every mutateIn call.  The column title combines the operation type and the path it acts on with format "operation:path" e.g. "upsert:user.name".  The "upsert:" prefix is optional, as that is the default.
-- Each cell represents the value that will be written by a spec to a document.
-
-An example will help make this clear.  Here we take an incoming DataFrame, manipulate it to specify the sub-document specs we want, and then write it to Couchbase:
-
-[source,scala]
-----
-include::example$SparkSQL.scala[tag=subdoc1,indent=0]
-----
-
-Our DataFrame now looks something like:
-```
-__META_ID    | user.name          | user.age
------------------------------------------
-"docId1"     | "John Richardson"  | 29
-"docId2"     | "Jane Doe"         | 34
-```
-
-Now write the transformed data back to KV using subdoc upsert.
-As we have two rows in the DataFrame this will result in two sub-document KV mutateIn calls from the connector, and each will upsert two fields "user.name" and "user.age" into the target documents.
-
-[source,scala]
-----
-include::example$SparkSQL.scala[tag=subdoc2,indent=0]
-----
-
-And we will end up with "docId1" containing JSON:
-```
-{
-  "user": {
-    "name": "John Richardson",
-    "age": 29
-  }
-  // .. and the rest of the document, which will not have been modified
-}
-```
-This is a very simple example of what is possible with sub-document.
-
-To illustrate how some of the other operations work on this sample data:
-
-[source,json]
-----
-{
-  "user": {
-    "age": 28,
-    "phoneNumbers": ["+1 8267485570"]
-  }
-}
-----
-
-.Sub-document operation examples
-[cols="1,1,1"]
-|===
-| Operation and Path | Value | Result
-
-| "increment:user.age"
-| 1
-a|
-[source]
-----
-{
-  "user": {
-    "age": 29,
-    ...
-  }
-}
-----
-| "arrayAppend:user.phoneNumbers"
-| "+1 9833848745"
-a|
-[source,json]
-----
-{
-  "user": {
-    ...
-    "phoneNumbers": ["+1 8267485570", "+1 9833848745"]
-  }
-}
-----
-
-| "arrayInsert:user.phoneNumbers[1]"
-| "+1 9833848745"
-a|
-[source,json]
-----
-{
-  "user": {
-    ...
-    "phoneNumbers": ["+1 8267485570", "+1 9833848745"]
-  }
-}
-----
-
-| "remove:user.phoneNumbers"
-| <anything except null>
-a|
-[source,json]
-----
-{
-  "user": {
-    ... phoneNumbers removed
-  }
-}
-----
-
-|===
-
-See the https://docs.couchbase.com/scala-sdk/current/howtos/subdocument-operations.html[Scala SDK documentation on sub-document operations] for full details.
-
-
-N.b. `remove` sub-document spec operations are a special case as they will ignore the provided value.
-Hence any value can be used, except null, as Spark will automatically remove null columns before it passes the DataFrame to the connector.
-
-==== Sub-document error handling
-The same xref:#failure-handling-during-persistence[Failure handling during persistence] error handling detailed above can be used with sub-document operations, so the failures of individual sub-document KV calls do not have to fail the entire Spark job.
-
-Bear in mind that the specified sub-document specs will be applied to all documents in the DataFrame, so the specs should be chosen to be compatible.
-For instance, "insert" and "replace" operations will fail if the field exists or does not respectively, while "upsert" will succeed regardless, and so will often be a better choice.
+The Spark Connector exposes sub-document KV writes via both xref:working-with-rdds.adoc[RDDs] and xref:subdocument.adoc[DataFrames].
 
 === DataFrame persistence performance tips
 We strongly recommend using the KeyValue data source for persisting DataFrames.

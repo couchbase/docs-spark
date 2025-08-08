@@ -211,6 +211,7 @@ object SparkSQL {
         )
         // Rename the columns to reflect the sub-document specs we wish to perform:
         // Spec 1: Upsert the contents of the "name" column into the "user.name" field
+        // We could also write "upsert:user.name", but upsert is the default.
         .withColumnRenamed("name", "user.name")
         // Spec 2: Upsert the contents of the "age" column into the "user.age" field
         .withColumnRenamed("age", "user.age")
@@ -226,6 +227,59 @@ object SparkSQL {
         .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
         .save()
     // end::subdoc2[]
+    }
+
+    {
+      // tag::subdoc-array-append[]
+      val queryData = spark.read.format("couchbase.query").load()
+
+      val transformedData = queryData
+        .select(
+          queryData("__META_ID"),
+          queryData("employee_phone_number")
+        )
+        .withColumnRenamed("employee_phone_number", "arrayAppend:user.phoneNumbers")
+
+      transformedData.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+    // end::subdoc-array-append[]
+    }
+
+    {
+      // tag::error-handling[]
+      dataFrame.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, testResources.bucketName)
+        .option(KeyValueOptions.Scope, testResources.scopeName)
+        .option(KeyValueOptions.Collection, testResources.collectionName)
+        // Specify a Couchbase collection to write errors to
+        .option(KeyValueOptions.ErrorBucket, testResources.bucketName)
+        .option(KeyValueOptions.ErrorScope, testResources.scopeName)
+        .option(KeyValueOptions.ErrorCollection, ErrorsCollection)
+        .save()
+      // end::error-handling[]
+    }
+
+
+    {
+      // tag::error-handling-subdoc[]
+      dataFrame.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, testResources.bucketName)
+        .option(KeyValueOptions.Scope, testResources.scopeName)
+        .option(KeyValueOptions.Collection, testResources.collectionName)
+        // Specify a Couchbase collection to write errors to
+        .option(KeyValueOptions.ErrorBucket, testResources.bucketName)
+        .option(KeyValueOptions.ErrorScope, testResources.scopeName)
+        .option(KeyValueOptions.ErrorCollection, ErrorsCollection)
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+      // end::error-handling-subdoc[]
     }
 
     {
