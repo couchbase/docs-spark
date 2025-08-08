@@ -356,7 +356,7 @@ The modes are mapped as follows:
 
 .couchbase.kv mappings
 |===
-| SaveMode | Couchbase KV | Behaviour
+| SaveMode | Underlying Couchbase KV Operation | Behaviour
 
 | SaveMode.Overwrite
 | Upsert
@@ -377,6 +377,20 @@ The modes are mapped as follows:
 | WriteModeReplace
 | Replace
 | Operations will fail with `DocumentNotFoundException` if doc does not exist
+
+| WriteModeSubdocUpsert
+| mutateIn (sub-document) with StoreSemantics.Upsert
+| Document will be created if it does not exist
+
+| WriteModeSubdocInsert
+| mutateIn (sub-document) with StoreSemantics.Insert
+| Operations will fail with `DocumentExistsException` if doc already exists
+
+| WriteModeSubdocReplace
+| mutateIn (sub-document) with StoreSemantics.Replace
+| Operations will fail with `DocumentNotFoundException` if doc does not exist
+
+
 
 |===
 
@@ -406,6 +420,11 @@ For key-value DataFrame writes, this can be overridden with two error handling o
 `KeyValueOptions.ErrorBucket` will cause any operation failure to write a document back into a Couchbase collection, containing information identifying the failing document and the failure reason.
 This is the recommended approach.
 
+[source,scala]
+----
+include::example$SparkSQL.scala[tag=error-handling,indent=0]
+----
+
 `KeyValueOptions.ErrorHandler` will call an error handling callback.
 An example implementation of the interface is provided with the connector, and users are free to write their own also.
 
@@ -423,8 +442,13 @@ This protects against documents being modified between the read and write points
 Such modifications will cause the operation to fail with a `CasMismatchException`.
 This will by default also cause the job to fail, which can be configured with the error handling options detailed elsewhere.
 
+=== Sub-document DataFrame KV persistence
+Couchbase supports sub-document writes that update only specific parts of the document, and users writing large documents may find this provides a performance optimisation, or allows concurrent actors to modify different parts of the same documents.
+The Spark Connector exposes sub-document KV writes via both xref:working-with-rdds.adoc[RDDs] and xref:subdocument.adoc[DataFrames].
+
 === DataFrame persistence performance tips
-As mentioned, we strongly recommend using the KeyValue data source for persisting DataFrames.
+We strongly recommend using the KeyValue data source for persisting DataFrames.
+This will automatically provide the best possible write performance.
 
 But if the query data source is required, then we recommend:
 
