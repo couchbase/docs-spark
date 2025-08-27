@@ -11,7 +11,7 @@ Please see one of the following getting started guide:
 * xref:pyspark.adoc[PySpark getting started].
 * xref:java-api.adoc[Java getting started].
 
-The Couchbase Spark Connector supports any type of Couchbase cluster.  Users of Capella Columnar should see the xref:columnar.adoc[Columnar Support] page.
+The Couchbase Spark Connector supports any type of Couchbase cluster.  Users of Capella Analytics or Enterprise Analytics should see the xref:enterprise-analytics.adoc[Analytics Support] page.
 
 == Compatibility
 

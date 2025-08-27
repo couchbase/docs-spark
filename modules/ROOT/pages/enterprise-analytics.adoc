@@ -1,17 +1,20 @@
-= Capella Columnar Support
-:nav-title: Columnar Support
+= Enterprise Analytics Support
+:nav-title: Analytics Support
+:page-aliases: columnar.adoc
+:description: Connecting to Capella Analytics or Enterprise Analytics cluster is very similar to connecting to any Couchbase cluster. 
 
 
 [abstract]
-Connecting to Capella Columnar is very similar to connecting to any Couchbase cluster. This section explains how.
+{description}
+This section explains how.
 
-Capella Columnar clusters can be connected to using either Scala or PySpark.
+Capella Analytics or Enterprise Analytics clusters can be connected to using either Scala or PySpark.
 To get bootstrapped, users should view the xref:getting-started.adoc[Scala getting started] or xref:pyspark.adoc[PySpark getting started] guides.
 
 
 == Spark Configuration
 
-The first step as usual is to create a `SparkSession`, here connecting to your Capella Columnar cluster.
+The first step as usual is to create a `SparkSession`, here connecting to your Capella Analytics or Enterprise Analytics cluster.
 This works just like connecting to any other type of Couchbase cluster.
 
 [{tabs}]
@@ -136,5 +139,5 @@ include::example$Columnar.py[tag=sql,indent=0]
 --
 ====
 
-Note this SQL is executed purely within Spark, and is not sent to the Capella Columnar cluster.
+Note this SQL is executed purely within Spark, and is not sent to the Analytics cluster.
 

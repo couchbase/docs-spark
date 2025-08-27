@@ -1,6 +1,6 @@
 = DataFrames, Datasets, and SQL
 :page-topic-type: concept
-:description: Spark allows accessing query, analytics, Enterprise Analytics, and Capella Columnar in powerful and convenient ways.
+:description: Spark allows accessing query, analytics, Enterprise Analytics, and Capella Analytics, in powerful and convenient ways.
 
 
 [abstract]
@@ -12,7 +12,9 @@ Let's see how to use those with Couchbase.
 Before you can create DataFrames or Datasets with Couchbase, you need to create a `SparkSession`.
 See xref:getting-started.adoc[Getting Started (Scala)] or xref:pyspark.adoc[Getting Start(PySpark)]
 
+
 == Running examples
+
 All query examples presented on this page at least require the `travel-sample` dataset to be installed on your Couchbase cluster, with a primary index.
 If you haven't done so already, you can create a primary index by executing this {sqlpp} statement: `pass:c[CREATE PRIMARY INDEX ON `travel-sample`]`.
 
@@ -23,7 +25,22 @@ Enterprise Analytics is also supported, and provides enhanced analytics capabili
 == DataFrames
 
 A read `DataFrame` can be created through `spark.read.format(...)`, and which format to choose depends on the type of service you want to use.
-For `spark.read`, `couchbase.query`, `couchbase.analytics`, `couchbase.enterprise-analytics`, and `couchbase.columnar` are available.
+For `spark.read` -- `couchbase.query`, `couchbase.analytics`, `couchbase.enterprise-analytics`, and `couchbase.columnar` are available.
+
+
+.Spark DataFrame Creation by Analytics Service
+|===
+| Analytics solution | Spark method
+
+| xref:enterprise-analytics:intro:intro.adoc[Enterprise Analytics]
+| `couchbase.enterprise-analytics`
+
+| xref:analytics:intro:intro.adoc[Capella Analytics] -- _formerly known as Columnar_
+| `couchbase.columnar`
+
+| xref:server:learn:services-and-indexes/services/analytics-service.adoc[CBAS (Couchbase Analytics Service)] -- row-based analytics in operational clusters (self-managed or Capella Operational)
+| `couchbase.analytics`
+|===
 
 (For reading from the KV service - see xref:working-with-rdds.adoc[RDDs])
 
@@ -60,7 +77,7 @@ PySpark::
 ----
 include::example$DataFrames.py[tag=query-collection,indent=0]
 ----
-Scala (Columnar)::
+Scala (Capella Analytics, _a.k.a._ Columnar)::
 +
 --
 [source,scala]
@@ -86,7 +103,9 @@ include::example$DataFrames.py[tag=enterprise-analytics-collection,indent=0]
 --
 ====
 
-Note all query options are documented here xref:_query_options[Query Options], all Capella Columnar options here xref:_columnar_options[Capella Columnar options], and all Enterprise Analytics options here xref:_enterprise_analytics_options[Enterprise Analytics options].
+Note, all query options are documented in xref:_query_options[Query Options], 
+all Capella Analytics options in xref:_columnar_options[Capella Analytics options], 
+and all Enterprise Analytics options in xref:_enterprise_analytics_options[Enterprise Analytics options].
 
 If you will usually be using the same collection, it can be more convenient to provide it in the SparkSession config instead:
 
@@ -111,13 +130,13 @@ We can limit both the inference and the {sqlpp} executed from the DataFrame to o
 
 [{tabs}]
 ====
-Scala (Columnar)::
+Scala (Capella Analytics, _a.k.a._ Columnar)::
 +
 [source,scala]
 ----
 include::example$SparkSQL.scala[tag=queryfilter,indent=0]
 ----
-PySpark (Columnar)::
+PySpark (Capella Analytics, _a.k.a._ Columnar)::
 +
 [source,python]
 ----
@@ -595,6 +614,7 @@ The available options for Enterprise Analytics DataFrame and Dataset operations:
 
 [#_kv_options]
 === KeyValue options
+
 The available options for query DataFrame and Dataset operations:
 
 .KeyValue Options
@@ -670,7 +690,8 @@ The available options for query DataFrame and Dataset operations:
 
 
 [#_columnar_options]
-=== Capella Columnar options
+=== Capella Analytics options
+
 The available options for Capella Columnar DataFrame and Dataset operations:
 
 .Capella Columnar Options
@@ -680,17 +701,17 @@ The available options for Capella Columnar DataFrame and Dataset operations:
 
 | "database"
 | ColumnarOptions.Database
-| Name of a Couchbase Columnar database
+| Name of a Couchbase Analytics database
 | Mandatory
 
 | "scope"
 | ColumnarOptions.Scope
-| Name of a Couchbase Columnar scope
+| Name of a Couchbase Analytics scope
 | Mandatory
 
 | "collection"
 | ColumnarOptions.Collection
-| Name of a Couchbase Columnar collection
+| Name of a Couchbase Analytics collection
 | Mandatory
 
 | "timeout"
@@ -705,7 +726,7 @@ The available options for Capella Columnar DataFrame and Dataset operations:
 
 | "scanConsistency"
 | ColumnarOptions.ScanConsistency
-| Valid options are "requestPlus" / ColumnarOptions.RequestPlusScanConsistency and "notBounded" / ColumnarOptions.NotBoundedScanConsistency.
+| Valid options are ,requestPlus` / `ColumnarOptions.RequestPlusScanConsistency` and `notBounded` / `ColumnarOptions.NotBoundedScanConsistency`.
 | "notBounded"
 
 | "inferLimit"
@@ -722,7 +743,7 @@ The available options for Capella Columnar DataFrame and Dataset operations:
 
 == Aggregate Push Down
 
-The following predicates are pushed down to the query, operational analytics, Enterprise Analytics, and Capella Columnar engines if possible:
+The following predicates are pushed down to the query, operational analytics, Enterprise Analytics, and Capella Analytics engines if possible:
 
 - `MIN(field)`
 - `MAX(field)`
