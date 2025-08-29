@@ -32,13 +32,13 @@ For `spark.read` -- `couchbase.query`, `couchbase.analytics`, `couchbase.enterpr
 |===
 | Analytics solution | Spark method
 
-| xref:enterprise-analytics:intro:intro.adoc[Enterprise Analytics]
+a| xref:enterprise-analytics:intro:intro.adoc[Enterprise Analytics]
 | `couchbase.enterprise-analytics`
 
-| xref:analytics:intro:intro.adoc[Capella Analytics] -- _formerly known as Columnar_
+a| xref:analytics:intro:intro.adoc[Capella Analytics] -- _formerly known as Columnar_
 | `couchbase.columnar`
 
-| xref:server:learn:services-and-indexes/services/analytics-service.adoc[CBAS (Couchbase Analytics Service)] -- row-based analytics in operational clusters (self-managed or Capella Operational)
+a| xref:server:learn:services-and-indexes/services/analytics-service.adoc[CBAS (Couchbase Analytics Service)] -- row-based analytics in operational clusters (self-managed or Capella Operational)
 | `couchbase.analytics`
 |===
 
