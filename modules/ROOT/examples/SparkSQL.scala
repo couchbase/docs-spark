@@ -196,6 +196,93 @@ object SparkSQL {
     }
 
     {
+      // tag::subdoc1[]
+      // Get a read Spark DataFrame from Couchbase (but could come from anywhere):
+      val queryData = spark.read.format("couchbase.query").load()
+
+      // Transform the data and prepare for subdoc operations
+      val transformedData = queryData
+        .select(
+          // This will be used as the document id, as usual
+          queryData("__META_ID"),
+          // The values in these columns will be used as the sub-document spec values
+          queryData("employee_name"),
+          queryData("employee_age"),
+        )
+        // Rename the columns to reflect the sub-document specs we wish to perform:
+        // Spec 1: Upsert the contents of the "name" column into the "user.name" field
+        // We could also write "upsert:user.name", but upsert is the default.
+        .withColumnRenamed("name", "user.name")
+        // Spec 2: Upsert the contents of the "age" column into the "user.age" field
+        .withColumnRenamed("age", "user.age")
+      // end::subdoc1[]
+
+      // tag::subdoc2[]
+      transformedData.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        // SubdocUpsert is used which will create the docs if they don't exist, otherwise overwrite them
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+    // end::subdoc2[]
+    }
+
+    {
+      // tag::subdoc-array-append[]
+      val queryData = spark.read.format("couchbase.query").load()
+
+      val transformedData = queryData
+        .select(
+          queryData("__META_ID"),
+          queryData("employee_phone_number")
+        )
+        .withColumnRenamed("employee_phone_number", "arrayAppend:user.phoneNumbers")
+
+      transformedData.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+    // end::subdoc-array-append[]
+    }
+
+    {
+      // tag::error-handling[]
+      dataFrame.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        // Specify a Couchbase collection to write errors to
+        .option(KeyValueOptions.ErrorBucket, "errorBucket")
+        .option(KeyValueOptions.ErrorScope, "errorScope")
+        .option(KeyValueOptions.ErrorCollection, "errorCollection")
+        .save()
+      // end::error-handling[]
+    }
+
+
+    {
+      // tag::error-handling-subdoc[]
+      dataFrame.write
+        .format("couchbase.kv")
+        .option(KeyValueOptions.Bucket, "aBucket")
+        .option(KeyValueOptions.Scope, "aScope")
+        .option(KeyValueOptions.Collection, "aCollection")
+        // Specify a Couchbase collection to write errors to
+        .option(KeyValueOptions.ErrorBucket, "errorBucket")
+        .option(KeyValueOptions.ErrorScope, "errorScope")
+        .option(KeyValueOptions.ErrorCollection, "errorCollection")
+        .option(KeyValueOptions.WriteMode, KeyValueOptions.WriteModeSubdocUpsert)
+        .save()
+      // end::error-handling-subdoc[]
+    }
+
+    {
       // tag::cas[]
       val airlines = spark.read.format("couchbase.query")
         .option(QueryOptions.Bucket, "travel-sample")
