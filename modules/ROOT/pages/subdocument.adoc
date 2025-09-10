@@ -5,7 +5,7 @@
 [abstract]
 {description}
 
-Couchbase supports sub-document writes that update only specific parts of the document, and users writing large documents may find this provides a performance optimisation, or allows concurrent actors to modify different parts of the same documents.
+Couchbase supports sub-document writes that update only specific parts of the document, and users writing large documents may find this provides a performance optimization, or allows concurrent actors to modify different parts of the same documents.
 The Spark Connector exposes the sub-document writes via both xref:working-with-rdds.adoc[RDDs] and DataFrames.
 
 The connector will ultimately perform sub-document KV mutateIn calls, one for each row/document in the DataFrame.
