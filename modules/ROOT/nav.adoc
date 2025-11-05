@@ -5,6 +5,7 @@
 * xref:dev-workflow.adoc[Development Workflow]
 * xref:working-with-rdds.adoc[Working With RDDs]
 * xref:spark-sql.adoc[DataFrames and Datasets]
+** xref:subdocument.adoc[]
 * xref:java-api.adoc[Java API]
 * xref:streaming.adoc[Structured Streaming Support]
 * xref:spark-shell.adoc[Using the Spark Shell]
