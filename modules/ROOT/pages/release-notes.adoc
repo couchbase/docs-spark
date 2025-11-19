@@ -4,6 +4,13 @@
 [abstract]
 Release notes for the Spark Connector.
 
+== Couchbase Spark Connector 3.5.4 (19 November 2025)
+
+Version 3.5.4 is built and tested against Spark 3.5.7, and supports Scala 2.12 and 2.13.
+
+=== New Features
+* https://couchbasecloud.atlassian.net/browse/SPARKC-232[SPARKC-232]:
+KV DataFrame sub-document write support added.  See xref:subdocument.adoc[these docs] for more information.
 
 == Couchbase Spark Connector 3.3.7 (10 September 2025)
 Important: most users should use the 3.5 series of the Spark Connector, which is compatible with Apache Spark 3.5.
@@ -12,7 +19,7 @@ This 3.3.7 connector release is for users of Apache Spark 3.3.  It is built and 
 
 === New Features
 * https://couchbasecloud.atlassian.net/browse/SPARKC-232[SPARKC-232]:
-KV DataFrame sub-document write support added.
+KV DataFrame sub-document write support added.  See xref:subdocument.adoc[these docs] for more information.
 
 == Couchbase Spark Connector 3.5.3 (8 August 2025)
 
