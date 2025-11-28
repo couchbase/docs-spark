@@ -56,7 +56,7 @@ And now the same example from the section above can be copy and pasted into the 
 There is no need to install Apache Spark first.
 
 Also see the notebook examples under 
-https://github.com/couchbase/couchbase-spark-connector/blob/master/src/test/pyspark/README.md[Couchbase Spark Connector PySpark examples].
+link:++https://github.com/couchbase/couchbase-spark-connector/blob/master/src/test/pyspark/examples/++[Couchbase Spark Connector PySpark examples].
 
 
 === Using `spark-submit`
