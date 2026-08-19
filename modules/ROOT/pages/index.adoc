@@ -16,7 +16,7 @@ The Couchbase Spark Connector supports any type of Couchbase cluster.  Users of 
 == Compatibility
 
 === Apache Spark 4.x users
-From the 4.0.0 release, the Couchbase Spark Connector is changing release models to better accommodate the [upcoming changes to the Apache Spark release model](https://spark.apache.org/versioning-policy.html).
+From the 4.0.0 release, the Couchbase Spark Connector is changing release models to better accommodate the https://spark.apache.org/versioning-policy.html[upcoming changes to the Apache Spark release model].
 
 Apache Spark now aim to release one major each year (N.0.0), followed by two feature minor releases (N.1.0 and N.2.0), then one long-term support (LTS) release N.3.0.
 This will be adopted fully from 5.0.0, and is being transitioned to mid-major with the upcoming Apache Spark 4.3.0 release.
