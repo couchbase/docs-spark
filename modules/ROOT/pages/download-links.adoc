@@ -23,7 +23,7 @@ libraryDependencies += "com.couchbase.client" %% "spark-connector" % "4.0.0"
 and then follow the xref:getting-started.adoc[Scala getting started documentation].
 
 The library package can also be downloaded:
-| https://packages.couchbase.com/clients/connectors/spark/4.0.0/Couchbase-Spark-Connector_2.13-4.0.0.zip[Download (Scala 2.13 / Java)^]
+https://packages.couchbase.com/clients/connectors/spark/4.0.0/Couchbase-Spark-Connector_2.13-4.0.0.zip[Download (Scala 2.13 / Java)^]
 | https://docs.couchbase.com/sdk-api/couchbase-spark-connector-4.0.0/api/com/couchbase/index.html[API Reference^]
 
 Note that the download also contains an assembled jar, which means they contain all the dependencies in one "fat jar".
