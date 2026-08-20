@@ -15,38 +15,26 @@ The Couchbase Spark Connector supports any type of Couchbase cluster.  Users of 
 
 == Compatibility
 
-Every version of the Couchbase Spark connector is compiled against a specific Apache Spark target.
+=== Apache Spark 4.x users
+From the 4.0.0 release, the Couchbase Spark Connector is changing release models to better accommodate the https://spark.apache.org/versioning-policy.html[upcoming changes to the Apache Spark release model].
 
-E.g. if you are using Apache Spark 3.5.x, you should use a 3.5.x version of the Couchbase Spark Connector.
+Apache Spark now aim to release one major each year (N.0.0), followed by two feature minor releases (N.1.0 and N.2.0), then one long-term support (LTS) release N.3.0.
+This will be adopted fully from 5.0.0, and is being transitioned to mid-major with the upcoming Apache Spark 4.3.0 release.
 
-.Couchbase Spark Connector compatibility
-|===
-| Couchbase Spark Connector version | Apache Spark target version
+The connector will now also have one major each year, with connector 4.X releases (2026/27) corresponding to the Apache Spark 4.X major, and connector 5.x releases (expected 2027/28) for Apache Spark 5.x, etc.
 
-| 3.5.x
-| 3.5.x
+Each 4.x connector release will aim where possible to be compatible with a useful subset of Apache Spark 4.x releases, particularly the latest patch of each minor that is currently supported by Apache.
+Apache plan to support N.0.0, N.1.0 and N.2.0 for 6 months apiece, and the LTS N.3.0 for 18 months.  The connector will aim to follow the same support model.
 
-| 3.3.x
-| 3.3.x
+See the xref:release-notes.adoc[release notes] for details of which Apache Spark versions are tested and fully supported for each connector release.
+Users may try Apache Spark 4.x releases that are not listed there, though untested combinations will not be officially supported.
 
-| 3.2.x
-| 3.2.x
-
-| 3.1.x
-| 3.1.x
-
-| 3.0.x
-| 3.0.x
-
-|===
-
-Note that if the internal Spark APIs do not break between minor versions, it is possible to use different version combinations.
-The table above shows the combination Couchbase tests and supports.
+=== Apache Spark 3.5 users
+Apache Spark 3.5.x users should use the latest 3.5.x of the Couchbase Spark Connector.
 
 === Interface Stability
 
 include::7.6@sdk:shared:partial$interface-stability-pars.adoc[tag=interface-stability-section]
-
 
 == Contributing
 
