@@ -4,9 +4,9 @@ object Columnar {
   // tag::init[]
   val spark = SparkSession
     .builder()
-    .appName("Couchbase Spark Connector Columnar Example") // your app name
+    .appName("Couchbase Spark Connector Capella Analytics Example") // your app name
     .master("local[*]") // your local or remote Spark master node
-    .config("spark.couchbase.connectionString", "couchbases://your-columnar-endpoint.cloud.couchbase.com")
+    .config("spark.couchbase.connectionString", "couchbases://your-capella-analytics-endpoint.cloud.couchbase.com")
     .config("spark.couchbase.username", "username")
     .config("spark.couchbase.password", "password")
     .getOrCreate()

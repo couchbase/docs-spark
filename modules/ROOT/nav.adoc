@@ -9,7 +9,7 @@
 * xref:java-api.adoc[Java API]
 * xref:streaming.adoc[Structured Streaming Support]
 * xref:spark-shell.adoc[Using the Spark Shell]
-* xref:columnar.adoc[Columnar Support]
+* xref:enterprise-analytics.adoc[Analytics Support]
 * xref:databricks.adoc[Databricks Support]
 * xref:configuration.adoc[Configuration]
 * xref:release-notes.adoc[Release Notes]
