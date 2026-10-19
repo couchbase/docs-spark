@@ -446,10 +446,15 @@ This will by default also cause the job to fail, which can be configured with th
 Couchbase supports sub-document writes that update only specific parts of the document, and users writing large documents may find this provides a performance optimisation, or allows concurrent actors to modify different parts of the same documents.
 The Spark Connector exposes sub-document KV writes via both xref:working-with-rdds.adoc[RDDs] and xref:subdocument.adoc[DataFrames].
 
-=== DataFrame persistence performance tips
-We strongly recommend using the KeyValue data source for persisting DataFrames.
-This will automatically provide the best possible write performance.
+=== KV DataFrame persistence performance tips
 
+* Use `KeyValueOptions.MaxConcurrentOps` to control how many concurrent KV operations each Spark worker will attempt.
+* Use xref:_failure_handling_during_persistence[error handling], so that any transient KV timeouts do not cause Spark to fail the entire task.
+* Monitor the Couchbase cluster to check how it is handling the load (view key metrics such as disk queue, CPU, memory).
+* Monitor the Spark worker log for the connector lines indicating how writing is proceeding.
+
+=== Query DataFrame persistence performance tips
+We strongly recommend using the KeyValue data source for persisting DataFrames, as it will provide much stronger write performance.
 But if the query data source is required, then we recommend:
 
 * Partition the data before writing it.  (Each partition results in one INSERT or UPSERT SQL++ statement being executed by the connector.)
@@ -690,6 +695,11 @@ The available options for query DataFrame and Dataset operations:
 | KeyValueOptions.ErrorHandler
 | Custom error handler class for handling operation failures. Must implement the appropriate interface.
 | None (operations fail the job)
+
+| "maxConcurrentOps"
+| KeyValueOptions.MaxConcurrentOps
+| How many write operations each Spark task (one per DataFrame partition) performs concurrently during KV DataFrame writes (RDD writes are not affected).  Total load on the cluster is approximately this, multiplied by the number of tasks running at once (generally equal to the number of Spark executors).  Increase it to improve throughput, reduce it if operations are timing out.
+| 16
 |===
 
 
