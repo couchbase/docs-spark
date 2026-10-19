@@ -698,7 +698,7 @@ The available options for query DataFrame and Dataset operations:
 
 | "maxConcurrentOps"
 | KeyValueOptions.MaxConcurrentOps
-| How many write operations each Spark task (one per DataFrame partition) performs concurrently.  Total load on the cluster is approximately this, multiplied by the number of tasks running at once (generally equal to the number of Spark executors).  Increase it to improve throughput, reduce it if operations are timing out.
+| How many write operations each Spark task (one per DataFrame partition) performs concurrently during KV DataFrame writes (RDD writes are not affected).  Total load on the cluster is approximately this, multiplied by the number of tasks running at once (generally equal to the number of Spark executors).  Increase it to improve throughput, reduce it if operations are timing out.
 | 16
 |===
 
