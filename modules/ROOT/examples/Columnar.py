@@ -2,14 +2,14 @@ from pyspark.sql import SparkSession
 
 # tag::init[]
 spark = (SparkSession.builder
-    .appName("Couchbase Spark Connector Columnar Example")
+    .appName("Couchbase Spark Connector Capella Analytics Example")
     # Note whether you need the .master(...) and .config("spark.jars"...) lines depends on how you are using Spark.
     # See our PySpark documentation for more details.
     .master("local[*]")
     .config("spark.jars", "/path/to/spark-connector-assembly-<version>.jar")
-    .config("spark.couchbase.connectionString", "couchbases://cb.your.columnar.connection.string.com")
-    .config("spark.couchbase.username", "YourColumnarUsername")
-    .config("spark.couchbase.password", "YourColumnarPassword")
+    .config("spark.couchbase.connectionString", "couchbases://cb.your.capella.analytics.connection.string.com")
+    .config("spark.couchbase.username", "YourCapellaUsername")
+    .config("spark.couchbase.password", "YourCapellaPassword")
     .getOrCreate())
 # end::init[]
 
