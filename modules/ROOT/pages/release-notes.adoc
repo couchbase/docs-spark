@@ -10,23 +10,23 @@ This release bumps the underlying Scala SDK to 3.13.0 to pick up fixes.
 
 === KV DataFrame partitioning improvements
 
-https://issues.couchbase.com/browse/SPARKC-240[SPARKC-240] includes multiple improved handling for large KV DataFrame partitions.
+https://issues.couchbase.com/browse/SPARKC-240[SPARKC-240] includes multiple improvements for the handling of large KV DataFrame partitions.
 
 It is now strongly recommended that users of KV DataFrames performing large jobs:
 
-* Use xref:https://docs.couchbase.com/spark-connector/3.5/spark-sql.html?highlight=Failure+handling+during+persistence#failure-handling-during-persistence[error handling] so that occasional KV timeouts do not abort the entire Spark job.
-* Monitor the Couchbase cluster resource usage and the `PartitionWriteStats` log lines, and adjust the `KeyValueOptions.MaxConcurrentOps` setting as needed to achieve the best possible consistent throughput.
+* Use xref:spark-sql.adoc#failure-handling-during-persistence[error handling] so that occasional KV timeouts do not abort the entire Spark job.
+* Monitor the Couchbase cluster resource usage and the new `PartitionWriteStats` Spar worker log lines, and adjust the `KeyValueOptions.MaxConcurrentOps` setting as needed to achieve the best possible consistent throughput.
 
 The improvements in this release for KV DataFrame writes are:
 
 Partitions are now JSON-converted as they stream, to avoid Out-of-Memory issues with very large partitions.
 
-The connector's default parallelism for these writes has been reduced to a more conservative setting (from 256 to 16), to help avoid creating excessive write load against the Couchbase cluster.
+The connector's default parallelism has been reduced to a more conservative setting (from 256 to 16), to help avoid creating excessive write load against the Couchbase cluster.
 Users may notice that jobs take longer as a result.
 
 A new `KeyValueOptions.MaxConcurrentOps` has been added to control that parallelism.
 Total load on the cluster is approximately this, multiplied by the number of tasks running at once (generally equal to the number of Spark executors).
-This will usually want to be adjusted to suit the capabilities of the cluster being used.
+This setting will usually want to be adjusted to suit the capabilities of the cluster being used.
 
 A worked example: On a Spark cluster with 8 executors, and where a single KV operation takes 1 millisecond, the default of 16 will give around 8 * 16 * 1000 = 128,000 operations per second.
 The previous default of 256 would have attempted over 2 million operations per second.
