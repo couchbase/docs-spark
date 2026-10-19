@@ -4,6 +4,46 @@
 [abstract]
 Release notes for the Spark Connector.
 
+== Couchbase Spark Connector 3.5.7 (19 October 2026)
+
+Version 3.5.7 is built and tested against Spark 3.5.9, and supports Scala 2.12 and 2.13.
+
+=== KV DataFrame partitioning improvements
+
+https://issues.couchbase.com/browse/SPARKC-240[SPARKC-240] includes multiple improvements for the handling of large KV DataFrame partitions.
+
+It is now strongly recommended that users of KV DataFrames performing large jobs:
+
+* Use xref:spark-sql.adoc#failure-handling-during-persistence[error handling] so that occasional KV timeouts do not abort the entire Spark job.
+* Monitor the Couchbase cluster resource usage and the new `PartitionWriteStats` Spar worker log lines, and adjust the `KeyValueOptions.MaxConcurrentOps` setting as needed to achieve the best possible consistent throughput.
+
+The improvements in this release for KV DataFrame writes are:
+
+Partitions are now JSON-converted as they stream, to avoid Out-of-Memory issues with very large partitions.
+
+The connector's default parallelism has been reduced to a more conservative setting (from 256 to 16), to help avoid creating excessive write load against the Couchbase cluster.
+Users may notice that jobs take longer as a result.
+
+A new `KeyValueOptions.MaxConcurrentOps` has been added to control that parallelism.
+Total load on the cluster is approximately this, multiplied by the number of tasks running at once (generally equal to the number of Spark executors).
+This setting will usually want to be adjusted to suit the capabilities of the cluster being used.
+
+A worked example: On a Spark cluster with 8 executors, and where a single KV operation takes 1 millisecond, the default of 16 will give around 8 * 16 * 1000 = 128,000 operations per second.
+The previous default of 256 would have attempted over 2 million operations per second.
+
+Extensive logging has been added.  Users can search the Spark worker logs for lines similar to these, which will help with tuning the `KeyValueOptions.MaxConcurrentOps` setting:
+```
+26/10/16 13:17:26 INFO PartitionWriteStats: Partition 3 of 200: last 11.9s: succeeded=43541 (3674/s) failed=0 ignored=0 | op latency min=0.19 p50=4.15 p95=16.58 max=65.24ms | conversion min=0.01 p50=0.03 p95=0.14 max=47.21ms | upstream read min=0.01 p50=0.04 p95=0.16 max=779.26ms | queue size min=0 p50=15 p95=16 max=16 (percentiles from first 10000 of 43819) | totals in 11.9s: read=43819 succeeded=43786 failed=0 ignored=0
+```
+
+=== Bug fixes
+
+* https://issues.couchbase.com/browse/SPARKC-243[SPARKC-243]:
+Handle larger document ids during error handling.
+Error handling documents are now written with a short hash instead of the previous construct that included the full document id, bucket, scope and collection.
+
+
+
 == Couchbase Spark Connector 3.5.6 (13 October 2026)
 
 Version 3.5.6 is built and tested against Spark 3.5.9, and supports Scala 2.12 and 2.13.
