@@ -27,7 +27,7 @@ KV DataFrame writes now reject SaveMode.Append before writing any documents, ins
 * https://issues.couchbase.com/browse/SPARKC-251[SPARKC-251]:
 Fixed pushed-down aggregations returning altered group-by values, null results with ten or more aggregates, and reduced-precision AVG results.
 * https://issues.couchbase.com/browse/SPARKC-252[SPARKC-252]:
-Filters pushed down to SQL++ now correctly handle string values containing quotes or LIKE wildcards, and nested fields in isin.
+Filters pushed down to {sqlpp} now correctly handle string values containing quotes or LIKE wildcards, and nested fields in isin.
 
 == Couchbase Spark Connector 3.5.7 (19 October 2026)
 
