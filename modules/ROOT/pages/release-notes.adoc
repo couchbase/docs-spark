@@ -4,6 +4,31 @@
 [abstract]
 Release notes for the Spark Connector.
 
+== Couchbase Spark Connector 3.5.8 (6 November 2026)
+
+Version 3.5.8 is built and tested against Spark 3.5.9, and supports Scala 2.12 and 2.13.
+It also bumps dependencies, including dcp-client to 0.58.0 and Scala 2.12 to 2.12.21.
+
+=== Improvements
+
+* https://issues.couchbase.com/browse/SPARKC-245[SPARKC-245]:
+Schema inference for Query, Analytics, Enterprise Analytics and Columnar reads now runs as a single Spark task, rather than one per executor core.
+
+=== Bug fixes
+
+* https://issues.couchbase.com/browse/SPARKC-246[SPARKC-246]:
+Query DataFrame reads once again apply backpressure, bounding executor memory when Spark consumes rows more slowly than the query service returns them.
+* https://issues.couchbase.com/browse/SPARKC-247[SPARKC-247]:
+Fixed incorrect and duplicated results when a user-supplied filter option containing OR was combined with pushed-down filters or query partitioning.
+* https://issues.couchbase.com/browse/SPARKC-248[SPARKC-248]:
+Passwords and other secrets in a connection identifier are no longer written to the connector's log output.
+* https://issues.couchbase.com/browse/SPARKC-249[SPARKC-249]:
+KV DataFrame writes now reject SaveMode.Append before writing any documents, instead of after.
+* https://issues.couchbase.com/browse/SPARKC-251[SPARKC-251]:
+Fixed pushed-down aggregations returning altered group-by values, null results with ten or more aggregates, and reduced-precision AVG results.
+* https://issues.couchbase.com/browse/SPARKC-252[SPARKC-252]:
+Filters pushed down to SQL++ now correctly handle string values containing quotes or LIKE wildcards, and nested fields in isin.
+
 == Couchbase Spark Connector 3.5.7 (19 October 2026)
 
 Version 3.5.7 is built and tested against Spark 3.5.9, and supports Scala 2.12 and 2.13.
