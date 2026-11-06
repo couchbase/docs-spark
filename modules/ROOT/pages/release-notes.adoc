@@ -5,6 +5,106 @@
 Release notes for the Couchbase Spark Connector.
 
 
+== Couchbase Spark Connector 4.0.3 (6 November 2026)
+This release bumps dependencies, including dcp-client to 0.58.0, and is tested against Spark 4.1.4 and 4.2.1.
+
+=== Improvements
+
+* https://issues.couchbase.com/browse/SPARKC-245[SPARKC-245]:
+Schema inference for Query, Analytics, Enterprise Analytics and Columnar reads now runs as a single Spark task, rather than one per executor core.
+
+=== Bug fixes
+
+* https://issues.couchbase.com/browse/SPARKC-246[SPARKC-246]:
+Query DataFrame reads once again apply backpressure, bounding executor memory when Spark consumes rows more slowly than the query service returns them.
+* https://issues.couchbase.com/browse/SPARKC-247[SPARKC-247]:
+Fixed incorrect and duplicated results when a user-supplied filter option containing OR was combined with pushed-down filters or query partitioning.
+* https://issues.couchbase.com/browse/SPARKC-248[SPARKC-248]:
+Passwords and other secrets in a connection identifier are no longer written to the connector's log output.
+* https://issues.couchbase.com/browse/SPARKC-249[SPARKC-249]:
+KV DataFrame writes now reject SaveMode.Append before writing any documents, instead of after.
+* https://issues.couchbase.com/browse/SPARKC-250[SPARKC-250]:
+On Spark 4, filters on collated string columns are now applied correctly, rather than being ignored.
+* https://issues.couchbase.com/browse/SPARKC-251[SPARKC-251]:
+Fixed pushed-down aggregations returning altered group-by values, null results with ten or more aggregates, and reduced-precision AVG results.
+* https://issues.couchbase.com/browse/SPARKC-252[SPARKC-252]:
+Filters pushed down to SQL++ now correctly handle string values containing quotes or LIKE wildcards, and nested fields in isin.
+
+==== Support matrix
+This connector release was built against these versions:
+
+[cols="1,1"]
+|===
+| Dependency | Version
+
+| Scala
+| 2.13.18
+
+| Couchbase operational SDK
+| 3.13.0
+
+| Couchbase Enterprise Analytics SDK
+| 1.1.0
+
+| Jackson
+| 2.21.2
+
+| Jackson annotations
+| 2.21
+|===
+
+Spark versions actively tested:
+
+[cols="1,1,1,1"]
+|===
+| Profile | Spark | Jackson | Jackson annotations
+
+| 4.1
+| 4.1.4
+| 2.21.2
+| 2.21
+
+| 4.2
+| 4.2.1
+| 2.21.2
+| 2.21
+
+|===
+
+The support matrix for Apache Spark releases is:
+
+[cols="1,1,2"]
+|===
+| Apache Spark version | Supported by Apache until | Status
+
+| 4.3 and above
+| -
+| Currently unreleased; status unknown
+
+| 4.2.1
+| 2028-01-11
+| Tested and supported
+
+| 4.1.4
+| 2027-07-11
+| Tested and supported
+
+| 4.0.X
+| 2026-11-23
+| Untested and unsupported; may not work due to very low Jackson version (2.18.2) Spark 4.0 uses
+
+| 3.X
+| -
+| Does not work due to Apache Spark binary changes at 4.x
+|===
+
+The source of the Apache support dates is the community site https://endoflife.date/apache-spark[endoflife.date] along with the https://spark.apache.org/versioning-policy.html[Apache Spark versioning policy].
+
+Users may try Apache Spark 4.x releases that are not listed here, though untested combinations will not be officially supported.
+
+The 4.x series is built exclusively with Scala 2.13.
+
+
 == Couchbase Spark Connector 4.0.2 (19 October 2026)
 This release bumps the underlying Scala SDK to 3.13.0 to pick up fixes.
 
